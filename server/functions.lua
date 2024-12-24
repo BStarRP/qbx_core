@@ -14,9 +14,9 @@ local storage = require 'server.storage.main'
 ---@param identifier Identifier
 ---@return integer source of the player with the matching identifier or 0 if no player found
 function GetSource(identifier)
-    for src in pairs(QBX.Players) do
+    for _, src in pairs(GetPlayers()) do
         local idens = GetPlayerIdentifiers(src)
-        for _, id in pairs(idens) do
+        for __, id in pairs(idens) do
             if identifier == id then
                 return src
             end
@@ -30,15 +30,7 @@ exports('GetSource', GetSource)
 ---@param identifier Identifier
 ---@return integer source of the player with the matching identifier or 0 if no player found
 function GetUserId(identifier)
-    for src in pairs(QBX.Players) do
-        local idens = GetPlayerIdentifiers(src)
-        for _, id in pairs(idens) do
-            if identifier == id then
-                return QBX.Players[src].PlayerData.userId
-            end
-        end
-    end
-    return 0
+    return storage.fetchUserByIdentifier(identifier) or 0
 end
 
 exports('GetUserId', GetUserId)
@@ -54,6 +46,22 @@ function GetPlayer(source)
 end
 
 exports('GetPlayer', GetPlayer)
+
+---@param identifier Identifier
+---@return integer source of the player with the matching identifier or 0 if no player found
+function GetUserIdByPlayerIdentifier(identifier)
+    for src in pairs(QBX.Players) do
+        local idens = GetPlayerIdentifiers(src)
+        for _, id in pairs(idens) do
+            if identifier == id then
+                return QBX.Players[src].PlayerData.userId
+            end
+        end
+    end
+    return 0
+end
+
+exports('GetUserIdByPlayerIdentifier', GetUserIdByPlayerIdentifier)
 
 ---@param citizenid string
 ---@return Player?
