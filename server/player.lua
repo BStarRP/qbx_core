@@ -1294,8 +1294,8 @@ function AddMoney(identifier, moneyType, amount, reason)
 
         emitMoneyEvents(player.PlayerData.source, player.PlayerData.money, moneyType, amount, 'add', false, reason)
     else
-        exports['qbx_core']:Log({
-            event = 'Added Money',
+        Log({
+            event = 'Player Added Money',
             message = ('**%s money added, new %s balance: $%s reason: %s'):format(self.PlayerData.name, moneyType, amount, reason),
             data = { reason = ReleaseBinkMovie, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneyType, cid = player.PlayerData.citizenid, status = 'offline'},
             resource = GetInvokingResource()
@@ -1356,8 +1356,8 @@ function RemoveMoney(identifier, moneyType, amount, reason)
 
         emitMoneyEvents(player.PlayerData.source, player.PlayerData.money, moneyType, amount, 'remove', true, reason)
     else
-        exports['qbx_core']:Log({
-            event = 'Removed Money',
+        Log({
+            event = 'Player Removed Money',
             message = ('**%s money removed, new %s balance: $%s reason: %s'):format(self.PlayerData.name, moneyType, amount, reason),
             data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = diffAmount, new_amount = newAmount, money_type = moneyType, cid = player.PlayerData.citizenid, status = 'online'},
             resource = GetInvokingResource()
@@ -1408,14 +1408,14 @@ function SetMoney(identifier, moneyType, amount, reason)
         player.Functions.Log({
             event = 'Set Money',
             message = ('**%s money was set, new %s balance: $%s reason: %s'):format(player.PlayerData.name, moneyType, amount, reason),
-            data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneytype, cid = self.PlayerData.citizenid, status = 'online'},
+            data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneytype, cid = player.PlayerData.citizenid, status = 'online'},
             resource = GetInvokingResource()
         })
 
         emitMoneyEvents(player.PlayerData.source, player.PlayerData.money, moneyType, absDifference, 'set', difference < 0, reason)
     else
-        exports['qbx_core']:Log({
-            event = 'Set Money',
+        Log({
+            event = 'Player Set Money',
             message = ('**%s money was set, new %s balance: $%s reason: %s'):format(player.PlayerData.name, moneyType, amount, reason),
             data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneyType, cid = player.PlayerData.citizenid, status = 'offline'},
             resource = GetInvokingResource()
@@ -1483,13 +1483,13 @@ function ForceDeleteCharacter(citizenid)
 
         CreateThread(function()
             local success = storage.deletePlayer(citizenid)
+            local charname = result.charinfo.firstname .. ' ' .. result.charinfo.lastname
             if success then
-                logger.log({
-                    source = 'qbx_core',
-                    webhook = config.logging.webhook['joinleave'],
+                Log({
                     event = 'Character Force Deleted',
-                    color = 'red',
-                    message = ('Character **%s** got deleted'):format(citizenid),
+                    message = string.format('%s has deleted a character: %s', GetPlayerName(source), charname),
+                    data = {},
+                    source = source,
                 })
             end
         end)
