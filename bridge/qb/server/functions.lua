@@ -681,8 +681,8 @@ function functions.IsPlayerBanned(source)
 end
 
 ---@see client/functions.lua:functions.Notify
-function functions.Notify(source, text, notifyType, duration, subTitle, notifyPosition, notifyStyle, notifyIcon, notifyIconColor)
-    exports.qbx_core:Notify(source, text, notifyType, duration, subTitle, notifyPosition, notifyStyle, notifyIcon, notifyIconColor)
+function functions.Notify(source, text, notifyType, duration, notifyIcon, notifyIconColor, notifyAnimation, notifyStyle, notifyPosition)
+    exports.qbx_core:Notify(source, text, notifyType, duration, notifyIcon, notifyIconColor, notifyAnimation, notifyStyle, notifyPosition)
 end
 
 ---@param InvokingResource string
