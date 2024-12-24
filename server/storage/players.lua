@@ -4,13 +4,13 @@ local characterDataTables = require 'config.server'.characterDataTables
 local function createUsersTable()
     MySQL.query([[
         CREATE TABLE IF NOT EXISTS `users` (
-            `userId` int UNSIGNED NOT NULL AUTO_INCREMENT,
+            `userid` int UNSIGNED NOT NULL AUTO_INCREMENT,
             `username` varchar(255) DEFAULT NULL,
             `license` varchar(50) DEFAULT NULL,
             `license2` varchar(50) DEFAULT NULL,
             `fivem` varchar(20) DEFAULT NULL,
             `discord` varchar(30) DEFAULT NULL,
-            PRIMARY KEY (`userId`)
+            PRIMARY KEY (`userid`)
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ]])
 end
@@ -31,7 +31,7 @@ end
 ---@return integer?
 local function fetchUserByIdentifier(identifier)
     local idType = identifier:match('([^:]+)')
-    local select = ('SELECT `userId` FROM `users` WHERE `%s` = ? LIMIT 1'):format(idType)
+    local select = ('SELECT `userid` FROM `users` WHERE `%s` = ? LIMIT 1'):format(idType)
 
     return MySQL.scalar.await(select, { identifier })
 end
@@ -113,8 +113,8 @@ end
 
 ---@param request UpsertPlayerRequest
 local function upsertPlayerEntity(request)
-    MySQL.insert.await('INSERT INTO players (userId, citizenid, cid, name, money, charinfo, job, gang, position, metadata, last_logged_out) VALUES (:citizenid, :cid, :name, :money, :charinfo, :job, :gang, :position, :metadata, :last_logged_out) ON DUPLICATE KEY UPDATE name = :name, money = :money, charinfo = :charinfo, job = :job, gang = :gang, position = :position, metadata = :metadata, last_logged_out = :last_logged_out', {
-        userId = request.playerEntity.userId,
+    MySQL.insert.await('INSERT INTO players (userid, citizenid, cid, name, money, charinfo, job, gang, position, metadata, last_logged_out) VALUES (:userid, :citizenid, :cid, :name, :money, :charinfo, :job, :gang, :position, :metadata, :last_logged_out) ON DUPLICATE KEY UPDATE name = :name, money = :money, charinfo = :charinfo, job = :job, gang = :gang, position = :position, metadata = :metadata, last_logged_out = :last_logged_out', {
+        userid = request.playerEntity.userid,
         citizenid = request.playerEntity.citizenid,
         cid = request.playerEntity.charinfo.cid,
         name = request.playerEntity.name,
@@ -166,12 +166,11 @@ end
 ---@return PlayerEntity?
 local function fetchPlayerEntity(citizenId)
     ---@type PlayerEntityDatabase
-    local player = MySQL.single.await('SELECT userId, citizenid, discord, name, charinfo, money, job, gang, position, metadata, UNIX_TIMESTAMP(last_logged_out) AS lastLoggedOutUnix FROM players WHERE citizenid = ?', { citizenId })
+    local player = MySQL.single.await('SELECT userid, citizenid, name, charinfo, money, job, gang, position, metadata, UNIX_TIMESTAMP(last_logged_out) AS lastLoggedOutUnix FROM players WHERE citizenid = ?', { citizenId })
     local charinfo = player and json.decode(player.charinfo)
     return player and {
-        userId = player.userId,
+        userId = player.userid,
         citizenid = player.citizenid,
-        discord = player.discord,
         name = player.name,
         money = json.decode(player.money),
         charinfo = charinfo,

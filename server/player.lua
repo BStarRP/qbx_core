@@ -53,7 +53,7 @@ function Login(source, citizenid, newData)
             return true, player
         end
     elseif newData then
-        newData.userId = userId
+        newData.userid = userId
         local player = CheckPlayerData(source, newData)
         player.Functions.Save()
 
@@ -581,7 +581,7 @@ function CheckPlayerData(source, playerData)
         Offline = false
     end
 
-    playerData.userId = playerData.userId or nil
+    playerData.userid = playerData.userid or nil
     playerData.citizenid = playerData.citizenid or GenerateUniqueIdentifier('citizenid')
     playerData.cid = playerData.charinfo?.cid or playerData.cid or 1
     playerData.money = playerData.money or {}
