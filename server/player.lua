@@ -419,6 +419,7 @@ function SetPlayerPrimaryGang(citizenid, gangName)
         name = gangName,
         label = gang.label,
         isboss = gang.grades[grade].isboss,
+        isunderboss = gang.grades[grade].isunderboss,
         bankAuth = gang.grades[grade].bankAuth,
         grade = {
             name = gang.grades[grade].name,
@@ -544,6 +545,7 @@ function RemovePlayerFromGang(citizenid, gangName)
             name = 'none',
             label = gang.label,
             isboss = false,
+            isunderboss = false,
             bankAuth = false,
             grade = {
                 name = gang.grades[0].name,
@@ -689,6 +691,7 @@ function CheckPlayerData(source, playerData)
         type = job.type,
         onduty = playerData.job?.onduty or false,
         isboss = job.grades[jobGrade].isboss or false,
+        ismanager = job.grades[jobGrade].ismanager or false,
         bankAuth = job.grades[jobGrade].bankAuth or false,
         grade = {
             name = job.grades[jobGrade].name,
@@ -707,6 +710,7 @@ function CheckPlayerData(source, playerData)
         name = playerData.gang?.name or 'none',
         label = gang.label,
         isboss = gang.grades[gangGrade].isboss or false,
+        isunderboss = gang.grades[gangGrade].isunderboss or false,
         bankAuth = gang.grades[gangGrade].bankAuth or false,
         grade = {
             name = gang.grades[gangGrade].name,
@@ -981,6 +985,7 @@ function CreatePlayer(playerData, Offline)
                 name = 'unemployed',
                 label = 'Civilian',
                 isboss = false,
+                ismanager = false,
                 bankAuth = false,
                 onduty = true,
                 payment = 10,
@@ -999,6 +1004,7 @@ function CreatePlayer(playerData, Offline)
                 self.PlayerData.job.grade.name = jobGrade.name
                 self.PlayerData.job.payment = jobGrade.payment or 30
                 self.PlayerData.job.isboss = jobGrade.isboss or false
+                self.PlayerData.job.ismanager = jobGrade.ismanager or false
                 self.PlayerData.job.bankAuth = jobGrade.bankAuth or false
             else
                 self.PlayerData.job.grade = {
@@ -1006,6 +1012,7 @@ function CreatePlayer(playerData, Offline)
                     level = 0,
                     payment = 30,
                     isboss = false,
+                    ismanager = false,
                 }
             end
         end
@@ -1025,6 +1032,7 @@ function CreatePlayer(playerData, Offline)
                 name = 'none',
                 label = 'No Gang Affiliation',
                 isboss = false,
+                isunderboss = false,
                 bankAuth = false,
                 grade = {
                     name = 'none',
@@ -1039,6 +1047,7 @@ function CreatePlayer(playerData, Offline)
             if gangGrade then
                 self.PlayerData.gang.grade.name = gangGrade.name
                 self.PlayerData.gang.isboss = gangGrade.isboss or false
+                self.PlayerData.gang.isunderboss = gangGrade.isunderboss or false
                 self.PlayerData.gang.bankAuth = gangGrade.bankAuth or false
             else
                 self.PlayerData.gang.grade = {
@@ -1046,6 +1055,7 @@ function CreatePlayer(playerData, Offline)
                     level = 0,
                 }
                 self.PlayerData.gang.isboss = false
+                self.PlayerData.gang.isunderboss = false
                 self.PlayerData.gang.bankAuth = false
             end
         end
