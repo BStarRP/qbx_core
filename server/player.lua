@@ -25,8 +25,6 @@ function Login(source, citizenid, newData)
         return false, {}
     end
 
-    lib.print.warn('Login', source, citizenid, newData)
-
     if QBX.Players[source] then
         DropPlayer(tostring(source), locale('info.exploit_dropped'))
         Log({
