@@ -35,6 +35,34 @@ function GetUserId(source)
     return userId
 end
 
+exports('GetUserId', GetUserId)
+
+---@param source Source|string source or identifier of the player
+---@return Player
+function GetPlayer(source)
+    if tonumber(source) ~= nil then
+        return QBX.Players[tonumber(source)]
+    else
+        return QBX.Players[GetSource(source --[[@as string]])]
+    end
+end
+
+exports('GetPlayer', GetPlayer)
+
+---@param identifier Identifier
+---@return integer source of the player with the matching identifier or 0 if no player found
+function GetUserIdByPlayerIdentifier(identifier)
+    for src in pairs(QBX.Players) do
+        local idens = GetPlayerIdentifiers(src)
+        for _, id in pairs(idens) do
+            if identifier == id then
+                return QBX.Players[src].PlayerData.userId
+            end
+        end
+    end
+    return 0
+end
+
 exports('GetUserIdByPlayerIdentifier', GetUserIdByPlayerIdentifier)
 
 ---@param citizenid string

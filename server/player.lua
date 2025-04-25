@@ -717,7 +717,7 @@ function CheckPlayerData(source, playerData)
     }
     playerData.gangs = gangs or {}
     playerData.position = playerData.position or defaultSpawn
-    playerData.items = GetResourceState('codem-inventory') ~= 'missing' and exports['qb-inventory']:LoadInventory(playerData.source, playerData.citizenid) or {}
+    playerData.items = {}
     return CreatePlayer(playerData --[[@as PlayerData]], Offline)
 end
 
