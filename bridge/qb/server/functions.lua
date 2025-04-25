@@ -118,7 +118,7 @@ end
 
 ---@deprecated use https://overextended.dev/ox_inventory/Functions/Server#search
 functions.HasItem = function(source, items, amount) -- luacheck: ignore
-    return exports['codem-inventory']:HasItem(source, items, amount)
+    return exports['qb-inventory']:HasItem(source, items, amount)
     --[[amount = amount or 1
     local count = exports.ox_inventory:Search(source, 'count', items)
     if type(items) == 'table' and type(count) == 'table' then

@@ -19,9 +19,9 @@ end
 
 ---@deprecated use https://overextended.dev/ox_inventory/Functions/Client#search
 functions.HasItem = function(items, amount)
-    exports['codem-inventory']:HasItem(items, amount)
-    --[[amount = amount or 1
-    local count = exports.ox_inventory:Search('count', items)
+    amount = amount or 1
+    local count = exports.
+    :Search('count', items)
     if type(items) == 'table' and type(count) == 'table' then
         for _, v in pairs(count) do
             if v < amount then
@@ -30,7 +30,7 @@ functions.HasItem = function(items, amount)
         end
         return true
     end
-    return count >= amount]]--
+    return count >= amount
 end
 
 -- Utility
