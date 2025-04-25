@@ -10,6 +10,12 @@ local jobs = require 'shared.jobs'
 ---@type table<string, Gang>
 local gangs = require 'shared.gangs'
 
+---@type table<string, Item>
+local items = require 'shared.items'
+
+---@type table<string, Weapon>
+local weapons = require 'shared.weapons'
+
 for name in pairs(jobs) do
     if name ~= name:lower() then
         lib.print.error(('jobs.lua contains a job name with capital letters: %s'):format(name))
@@ -102,6 +108,20 @@ function GetGangs()
 end
 
 exports('GetGangs', GetGangs)
+
+---@return table<string, Item>
+function GetItems()
+    return items
+end
+
+exports('GetItems', GetItems)
+
+---@return table<string, Weapon>
+function GetWeapons()
+    return weapons
+end
+
+exports('GetWeapons', GetWeapons)
 
 ---@param name string
 ---@return Job?

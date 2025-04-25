@@ -19,7 +19,8 @@ end
 
 ---@deprecated use https://overextended.dev/ox_inventory/Functions/Client#search
 functions.HasItem = function(items, amount)
-    amount = amount or 1
+    exports['codem-inventory']:HasItem(items, amount)
+    --[[amount = amount or 1
     local count = exports.ox_inventory:Search('count', items)
     if type(items) == 'table' and type(count) == 'table' then
         for _, v in pairs(count) do
@@ -29,7 +30,7 @@ functions.HasItem = function(items, amount)
         end
         return true
     end
-    return count >= amount
+    return count >= amount]]--
 end
 
 -- Utility
@@ -894,13 +895,14 @@ end
 ---@param text table|string text of the notification
 ---@param notifyType? NotificationType informs default styling. Defaults to 'inform'
 ---@param duration? integer milliseconds notification will remain on screen. Defaults to 5000
----@param subTitle? string extra text under the title
----@param notifyPosition? NotificationPosition
----@param notifyStyle? table Custom styling. Please refer too https://overextended.dev/ox_lib/Modules/Interface/Client/notify#libnotify
----@param notifyIcon? string Font Awesome 6 icon name
----@param notifyIconColor? string Custom color for the icon chosen before
-function functions.Notify(text, notifyType, duration, subTitle, notifyPosition, notifyStyle, notifyIcon, notifyIconColor)
-    exports.qbx_core:Notify(text, notifyType, duration, subTitle, notifyPosition, notifyStyle, notifyIcon, notifyIconColor)
+---@param icon? string Font Awesome 6 icon name
+---@param iconColor? string Custom color for the icon chosen before
+---@param animation? string Animation type. Defaults to 'fade'
+---@param sound? table Sound to play. Defaults to 'default'
+---@param style? table Custom styling. Please refer too https://overextended.dev/ox_lib/Modules/Interface/Client/notify#libnotify
+---@param position? NotificationPosition
+function functions.Notify(text, notifyType, duration, icon, iconColor, animation, sound, style, position)
+    exports.qbx_core:Notify(text, notifyType, duration, icon, iconColor, animation, sound, style, position)
 end
 
 return functions

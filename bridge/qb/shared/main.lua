@@ -134,4 +134,8 @@ qbShared.MaleNoGloves = qbx.armsWithoutGloves.male
 ---@deprecated use qbx.armsWithoutGloves.female from modules/lib.lua
 qbShared.FemaleNoGloves = qbx.armsWithoutGloves.female
 
+qbShared.BackEngineVehicles = qbx.backEngineVehicles
+
+qbShared.ElectricVehicles = qbx.electricVehicles
+
 return qbShared

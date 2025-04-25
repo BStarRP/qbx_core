@@ -9,6 +9,8 @@ qbCoreCompat.Config = lib.table.merge(require 'config.client', require 'config.s
 qbCoreCompat.Shared = require 'bridge.qb.shared.main'
 qbCoreCompat.Shared.Jobs = GetJobs()
 qbCoreCompat.Shared.Gangs = GetGangs()
+qbCoreCompat.Shared.Items = GetItems()
+qbCoreCompat.Shared.Weapons = GetWeapons()
 qbCoreCompat.Functions = require 'bridge.qb.client.functions'
 
 ---@diagnostic disable: deprecated

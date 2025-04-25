@@ -1,5 +1,7 @@
 local jobs = require 'shared.jobs'
 local gangs = require 'shared.gangs'
+local items = require 'shared.items'
+local weapons = require 'shared.weapons'
 
 ---@return table<string, Job>
 function GetJobs()
@@ -14,6 +16,20 @@ function GetGangs()
 end
 
 exports('GetGangs', GetGangs)
+
+---@return table<string, Item>
+function GetItems()
+    return items
+end
+
+exports('GetItems', GetItems)
+
+---@return table<string, Weapon>
+function GetWeapons()
+    return weapons
+end
+
+exports('GetWeapons', GetWeapons)
 
 ---@param name string
 ---@return Job?

@@ -42,7 +42,7 @@ function Login(source, citizenid, newData)
     local userId = storage.fetchUserByIdentifier(discord)
 
     if not userId then
-        lib.print.error('User does not exist. Licenses checked:', license2, license)
+        lib.print.error('User does not exist. Discord checked:', discord)
         return false, {}
     end
     if citizenid then
@@ -576,7 +576,7 @@ function CheckPlayerData(source, playerData)
     local Offline = true
     if source then
         playerData.source = source
-        playerData.discord = playerData.discord or GetPlayerIdentifierByType(source --[[@as string]], 'discord')
+        playerData.discord = GetPlayerIdentifierByType(source --[[@as string]], 'discord')
         playerData.name = GetPlayerName(source)
         Offline = false
     end
@@ -713,7 +713,7 @@ function CheckPlayerData(source, playerData)
     }
     playerData.gangs = gangs or {}
     playerData.position = playerData.position or defaultSpawn
-    playerData.items = {}
+    playerData.items = GetResourceState('codem-inventory') ~= 'missing' and exports['codem-inventory']:LoadInventory(playerData.source, playerData.citizenid) or {}
     return CreatePlayer(playerData --[[@as PlayerData]], Offline)
 end
 
@@ -884,7 +884,8 @@ function CreatePlayer(playerData, Offline)
     ---@return boolean success
     function self.Functions.AddItem(item, amount, slot, metadata)
         assert(not self.Offline, 'unsupported for offline players')
-        return exports.ox_inventory:AddItem(self.PlayerData.source, oxItemCompat(item), amount, metadata, slot)
+        return exports['codem-inventory']:AddItem(self.PlayerData.source, item, amount, slot, metadata)
+        --return exports.ox_inventory:AddItem(self.PlayerData.source, oxItemCompat(item), amount, metadata, slot)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -894,7 +895,8 @@ function CreatePlayer(playerData, Offline)
     ---@return boolean success
     function self.Functions.RemoveItem(item, amount, slot)
         assert(not self.Offline, 'unsupported for offline players')
-        return exports.ox_inventory:RemoveItem(self.PlayerData.source, oxItemCompat(item), amount, nil, slot)
+        return exports['codem-inventory']:RemoveItem(self.PlayerData.source, item, amount, slot)
+        --return exports.ox_inventory:RemoveItem(self.PlayerData.source, oxItemCompat(item), amount, nil, slot)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -902,7 +904,8 @@ function CreatePlayer(playerData, Offline)
     ---@return any table
     function self.Functions.GetItemBySlot(slot)
         assert(not self.Offline, 'unsupported for offline players')
-        return qbItemCompat(exports.ox_inventory:GetSlot(self.PlayerData.source, slot))
+        return exports['codem-inventory']:GetItemBySlot(self.PlayerData.source, slot)
+        --return qbItemCompat(exports.ox_inventory:GetSlot(self.PlayerData.source, slot))
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -910,7 +913,8 @@ function CreatePlayer(playerData, Offline)
     ---@return any table
     function self.Functions.GetItemByName(itemName)
         assert(not self.Offline, 'unsupported for offline players')
-        return qbItemCompat(exports.ox_inventory:GetSlotWithItem(self.PlayerData.source, oxItemCompat(itemName)))
+        return exports['codem-inventory']:GetItemByName(self.PlayerData.source, itemName)
+        --return qbItemCompat(exports.ox_inventory:GetSlotWithItem(self.PlayerData.source, oxItemCompat(itemName)))
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -918,18 +922,21 @@ function CreatePlayer(playerData, Offline)
     ---@return any table
     function self.Functions.GetItemsByName(itemName)
         assert(not self.Offline, 'unsupported for offline players')
-        return qbItemCompat(exports.ox_inventory:GetSlotsWithItem(self.PlayerData.source, oxItemCompat(itemName)))
+        return exports['codem-inventory']:GetItemsByName(self.PlayerData.source, itemName)
+        --return qbItemCompat(exports.ox_inventory:GetSlotsWithItem(self.PlayerData.source, oxItemCompat(itemName)))
     end
 
     ---@deprecated use ox_inventory exports directly
     function self.Functions.ClearInventory()
         assert(not self.Offline, 'unsupported for offline players')
-        return exports.ox_inventory:ClearInventory(self.PlayerData.source)
+        return exports['codem-inventory']:ClearInventory(self.PlayerData.source)
+        --return exports.ox_inventory:ClearInventory(self.PlayerData.source)
     end
 
     ---@deprecated use ox_inventory exports directly
     function self.Functions.SetInventory()
-        error('Player.Functions.SetInventory is unsupported for ox_inventory. Try ClearInventory, then add the desired items.')
+        exports['codem-inventory']:SetInventory(self.PlayerData.source)
+        --error('Player.Functions.SetInventory is unsupported for ox_inventory. Try ClearInventory, then add the desired items.')
     end
 
     function self.Functions.GetFullName()
@@ -954,11 +961,15 @@ function CreatePlayer(playerData, Offline)
         end
     end
 
-                                                                             ---@param type string
+    ---@see client/functions.lua:functions.Notify
+    function self.Functions.Notify(text, notifyType, duration, icon, iconColor, animation, sound, style, position)
+        exports.qbx_core:Notify(self.PlayerData.source, text, notifyType, duration, icon, iconColor, animation, sound, style, position)
+    end
+
     --Player Specific Logging
     ---@param data table event, message, data, playerSrc, targetSrc, resource
     function self.Functions.Log(data)
-        exports['BSTAR-Logger']:CreateLog('Player '..data.event, data.message, data.data or {}, data.playerSrc or self.PlayerData.source, data.targetSrc, data.resource or GetInvokingResource())
+        exports['bstar-logging']:CreateLog('Player '..data.event, data.message, data.data or {}, data.playerSrc or self.PlayerData.source, data.targetSrc, data.resource or GetInvokingResource())
     end
 
     ---@deprecated call exports.qbx_core:Logout(source)
@@ -979,6 +990,7 @@ function CreatePlayer(playerData, Offline)
                 name = 'unemployed',
                 label = 'Civilian',
                 isboss = false,
+                ismanager = false,
                 onduty = true,
                 payment = 10,
                 grade = {
@@ -1000,9 +1012,10 @@ function CreatePlayer(playerData, Offline)
                 self.PlayerData.job.grade = {
                     name = 'No Grades',
                     level = 0,
-                    payment = 30,
-                    isboss = false,
+                    payment = 10,
                 }
+                self.PlayerData.job.isboss = false
+                self.PlayerData.job.ismanager = false
             end
         end
 
@@ -1021,9 +1034,10 @@ function CreatePlayer(playerData, Offline)
                 name = 'none',
                 label = 'No Gang Affiliation',
                 isboss = false,
+                isunderboss = false,
                 grade = {
                     name = 'none',
-                    level = 0
+                    level = 0,
                 }
             }
         else
@@ -1033,12 +1047,14 @@ function CreatePlayer(playerData, Offline)
 
             if gangGrade then
                 self.PlayerData.gang.isboss = gangGrade.isboss or false
+                self.PlayerData.gang.isunderboss = gangGrade.isunderboss or false
             else
                 self.PlayerData.gang.grade = {
                     name = 'No Grades',
                     level = 0,
                 }
                 self.PlayerData.gang.isboss = false
+                self.PlayerData.gang.isunderboss = false
             end
         end
 
@@ -1100,7 +1116,8 @@ function Save(source)
             position = pcoords,
         })
     end)
-    assert(GetResourceState('qb-inventory') ~= 'started', 'qb-inventory is not compatible with qbx_core. use ox_inventory instead')
+    if GetResourceState('codem-inventory') ~= 'missing' then exports['codem-inventory']:SaveInventory(source) end
+    --assert(GetResourceState('qb-inventory') ~= 'started', 'qb-inventory is not compatible with qbx_core. use ox_inventory instead')
     lib.print.verbose(('%s PLAYER SAVED!'):format(playerData.name))
 end
 
@@ -1119,7 +1136,8 @@ function SaveOffline(playerData)
             position = playerData.position.xyz
         })
     end)
-    assert(GetResourceState('qb-inventory') ~= 'started', 'qb-inventory is not compatible with qbx_core. use ox_inventory instead')
+    if GetResourceState('codem-inventory') ~= 'missing' then exports['codem-inventory']:SaveInventory(PlayerData, true) end
+    --assert(GetResourceState('qb-inventory') ~= 'started', 'qb-inventory is not compatible with qbx_core. use ox_inventory instead')
     lib.print.verbose(('%s OFFLINE PLAYER SAVED!'):format(playerData.name))
 end
 
@@ -1246,11 +1264,11 @@ local function emitMoneyEvents(source, playerMoney, moneyType, amount, actionTyp
         TriggerClientEvent('qb-phone:client:RemoveBankMoney', source, amount)
     end
 
-    local oxMoneyType = moneyType == 'cash' and 'money' or moneyType
+    --[[local oxMoneyType = moneyType == 'cash' and 'money' or moneyType
 
     if accountsAsItems[oxMoneyType] then
         exports.ox_inventory:SetItem(source, oxMoneyType, playerMoney[moneyType])
-    end
+    end]]--
 end
 
 ---@param identifier Source | string
@@ -1408,7 +1426,7 @@ function SetMoney(identifier, moneyType, amount, reason)
         player.Functions.Log({
             event = 'Set Money',
             message = ('**%s money was set, new %s balance: $%s reason: %s'):format(player.PlayerData.name, moneyType, amount, reason),
-            data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneytype, cid = self.PlayerData.citizenid, status = 'online'},
+            data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneytype, cid = player.PlayerData.citizenid, status = 'online'},
             resource = GetInvokingResource()
         })
 

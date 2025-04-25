@@ -801,12 +801,11 @@ else
         [13] = true,
         [14] = true,
         [15] = true,
+        [16] = true,
+        [17] = true,
         [18] = true,
-        [26] = true,
-        [52] = true,
-        [53] = true,
-        [54] = true,
-        [55] = true,
+        [19] = true,
+        [22] = true,
         [56] = true,
         [57] = true,
         [58] = true,
@@ -814,12 +813,17 @@ else
         [60] = true,
         [61] = true,
         [62] = true,
-        [112] = true,
-        [113] = true,
-        [114] = true,
+        [63] = true,
+        [64] = true,
+        [65] = true,
+        [66] = true,
+        [116] = true,
+        [117] = true,
         [118] = true,
-        [125] = true,
-        [132] = true
+        [122] = true,
+        [129] = true,
+        [136] = true,
+        [188] = true,
     }
 
     ---@deprecated use qbx.armsWithoutGloves.female from modules/lib.lua
@@ -840,7 +844,6 @@ else
         [13] = true,
         [14] = true,
         [15] = true,
-        [19] = true,
         [59] = true,
         [60] = true,
         [61] = true,
@@ -863,7 +866,10 @@ else
         [153] = true,
         [157] = true,
         [161] = true,
-        [165] = true
+        [165] = true,
+        [195] = true,
+        [229] = true,
+        [223] = true
     }
 
     ---@deprecated use qbx.isWearingGloves from modules/lib.lua

@@ -27,18 +27,12 @@ end
 
 exports('GetSource', GetSource)
 
----@param identifier Identifier
 ---@return integer source of the player with the matching identifier or 0 if no player found
-function GetUserId(identifier)
-    for src in pairs(QBX.Players) do
-        local idens = GetPlayerIdentifiers(src)
-        for _, id in pairs(idens) do
-            if identifier == id then
-                return QBX.Players[src].PlayerData.userId
-            end
-        end
-    end
-    return 0
+function GetUserId(source)
+    local src = source --[[@as string]]
+    local discord = GetPlayerIdentifierByType(src, 'discord')
+    local userId = storage.fetchUserByIdentifier(discord)
+    return userId
 end
 
 exports('GetUserId', GetUserId)
@@ -402,18 +396,15 @@ end
 exports('IsPlayerBanned', IsPlayerBanned)
 
 ---@see client/lua:Notify
-function Notify(source, text, notifyType, duration, subTitle, notifyPosition, notifyStyle, notifyIcon, notifyIconColor)
+function Notify(source, text, notifyType, duration, icon, iconColor, animation, sound, style, position)
     local title, description
-    if type(text) == 'table' then
+    if type(text) == 'table' and text.caption then
         title = text.text or 'Placeholder'
         description = text.caption or nil
-    elseif subTitle then
-        title = text
-        description = subTitle
     else
         description = text
     end
-    local position = notifyPosition or positionConfig
+    local position = position or positionConfig
 
     TriggerClientEvent('ox_lib:notify', source, {
         id = title,
@@ -422,9 +413,11 @@ function Notify(source, text, notifyType, duration, subTitle, notifyPosition, no
         duration = duration,
         type = notifyType,
         position = position,
-        style = notifyStyle,
-        icon = notifyIcon,
-        iconColor = notifyIconColor
+        style = style,
+        icon = icon,
+        iconColor = iconColor,
+        iconAnimation = animation,
+        sound = sound,
     })
 end
 
@@ -564,7 +557,7 @@ exports('DeleteVehicle', DeleteVehicle)
 function Log(data)
     if not data or type(data) ~= 'table' then return end
     local resource = data.resource or GetInvokingResource()
-    exports['BSTAR-Logger']:CreateLog(data.event, data.message, data.data, data.source, data.target, resource)
+    exports['bstar-logging']:CreateLog(data.event, data.message, data.data, data.source, data.target, resource)
 end
 
 exports('Log', Log)
