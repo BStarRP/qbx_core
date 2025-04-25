@@ -14,9 +14,9 @@ local storage = require 'server.storage.main'
 ---@param identifier Identifier
 ---@return integer source of the player with the matching identifier or 0 if no player found
 function GetSource(identifier)
-    for src in pairs(QBX.Players) do
+    for _, src in pairs(GetPlayers()) do
         local idens = GetPlayerIdentifiers(src)
-        for _, id in pairs(idens) do
+        for __, id in pairs(idens) do
             if identifier == id then
                 return src
             end
@@ -35,19 +35,7 @@ function GetUserId(source)
     return userId
 end
 
-exports('GetUserId', GetUserId)
-
----@param source Source|string source or identifier of the player
----@return Player
-function GetPlayer(source)
-    if type(source) == 'number' then
-        return QBX.Players[source]
-    else
-        return QBX.Players[GetSource(source --[[@as string]])]
-    end
-end
-
-exports('GetPlayer', GetPlayer)
+exports('GetUserIdByPlayerIdentifier', GetUserIdByPlayerIdentifier)
 
 ---@param citizenid string
 ---@return Player?

@@ -102,6 +102,8 @@ local randomPeds = {
     }
 }
 
+NetworkStartSoloTutorialSession()
+
 local nationalities = {}
 
 if config.characters.limitNationalities then
@@ -353,6 +355,11 @@ local function createCharacter(cid)
 end
 
 local function chooseCharacter()
+    ---@type PlayerEntity[], integer
+    local characters, amount = lib.callback.await('qbx_core:server:getCharacters')
+    local firstCharacterCitizenId = characters[1] and characters[1].citizenid
+    previewPed(firstCharacterCitizenId)
+
     randomLocation = config.characters.locations[math.random(1, #config.characters.locations)]
     SetFollowPedCamViewMode(2)
     DisplayRadar(false)
@@ -368,8 +375,10 @@ local function chooseCharacter()
     SetEntityCoords(cache.ped, randomLocation.pedCoords.x, randomLocation.pedCoords.y, randomLocation.pedCoords.z, false, false, false, false)
     SetEntityHeading(cache.ped, randomLocation.pedCoords.w)
 
-    if not NetworkIsInTutorialSession() then
-        NetworkStartSoloTutorialSession()
+    NetworkStartSoloTutorialSession()
+
+    while not NetworkIsInTutorialSession() do
+        Wait(0)
     end
 
     Wait(1500)
@@ -377,8 +386,6 @@ local function chooseCharacter()
     ShutdownLoadingScreenNui()
     setupPreviewCam()
 
-    ---@type PlayerEntity[], integer
-    local characters, amount = lib.callback.await('qbx_core:server:getCharacters')
     local options = {}
     for i = 1, amount do
         local character = characters[i]
@@ -408,6 +415,7 @@ local function chooseCharacter()
                     local success = createCharacter(i)
                     if success then return end
 
+                    previewPed(firstCharacterCitizenId)
                     lib.showContext('qbx_core_multichar_characters')
                 end
             end
@@ -503,9 +511,14 @@ CreateThread(function()
         if NetworkIsSessionStarted() then
             pcall(function() exports.spawnmanager:setAutoSpawn(false) end)
             Wait(250)
-            randomPed()
             chooseCharacter()
             break
         end
     end
+    -- since people apparently die during char select. Since SetEntityInvincible is notoriously unreliable, we'll just loop it to be safe. shrug
+    while NetworkIsInTutorialSession() do
+        SetEntityInvincible(PlayerPedId(), true)
+        Wait(250)
+    end
+    SetEntityInvincible(PlayerPedId(), false)
 end)

@@ -8,8 +8,10 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
         NetworkSetFriendlyFireOption(true)
     end
 
-    if NetworkIsInTutorialSession() then
-        NetworkEndTutorialSession()
+    NetworkEndTutorialSession()
+
+    while NetworkIsInTutorialSession() do
+        Wait(0)
     end
 
     local motd = GetConvar('qbx:motd', '')
@@ -43,6 +45,8 @@ end)
 
 ---@param coords vector3
 RegisterNetEvent('QBCore:Command:TeleportToPlayer', function(coords)
+    if GetInvokingResource() then return end
+
     SetPedCoordsKeepVehicle(cache.ped, coords.x, coords.y, coords.z)
 end)
 
@@ -51,6 +55,8 @@ end)
 ---@param z number
 ---@param h number
 RegisterNetEvent('QBCore:Command:TeleportToCoords', function(x, y, z, h)
+    if GetInvokingResource() then return end
+    
     SetPedCoordsKeepVehicle(cache.ped, x, y, z)
     SetEntityHeading(cache.ped, h or GetEntityHeading(cache.ped))
 end)

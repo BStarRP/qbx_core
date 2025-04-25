@@ -54,3 +54,7 @@ end)
 RegisterNetEvent('qbx_core:client:onGangUpdate', function(gangName, gang)
     gangs[gangName] = gang
 end)
+
+local groups = lib.callback.await('qbx_core:server:getGroups')
+jobs = groups.jobs
+gangs = groups.gangs

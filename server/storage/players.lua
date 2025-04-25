@@ -4,13 +4,13 @@ local characterDataTables = require 'config.server'.characterDataTables
 local function createUsersTable()
     MySQL.query([[
         CREATE TABLE IF NOT EXISTS `users` (
-            `userId` int UNSIGNED NOT NULL AUTO_INCREMENT,
+            `userid` int UNSIGNED NOT NULL AUTO_INCREMENT,
             `username` varchar(255) DEFAULT NULL,
             `license` varchar(50) DEFAULT NULL,
             `license2` varchar(50) DEFAULT NULL,
             `fivem` varchar(20) DEFAULT NULL,
             `discord` varchar(30) DEFAULT NULL,
-            PRIMARY KEY (`userId`)
+            PRIMARY KEY (`userid`)
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ]])
 end
@@ -31,7 +31,7 @@ end
 ---@return integer?
 local function fetchUserByIdentifier(identifier)
     local idType = identifier:match('([^:]+)')
-    local select = ('SELECT `userId` FROM `users` WHERE `%s` = ? LIMIT 1'):format(idType)
+    local select = ('SELECT `userid` FROM `users` WHERE `%s` = ? LIMIT 1'):format(idType)
 
     return MySQL.scalar.await(select, { identifier })
 end
@@ -169,7 +169,7 @@ local function fetchPlayerEntity(citizenId)
     local player = MySQL.single.await('SELECT userId, citizenid, name, charinfo, money, job, gang, position, metadata, UNIX_TIMESTAMP(last_logged_out) AS lastLoggedOutUnix FROM players WHERE citizenid = ?', { citizenId })
     local charinfo = player and json.decode(player.charinfo)
     return player and {
-        userId = player.userId,
+        userId = player.userid,
         citizenid = player.citizenid,
         name = player.name,
         money = json.decode(player.money),

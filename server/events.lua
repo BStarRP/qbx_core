@@ -39,7 +39,7 @@ AddEventHandler('playerDropped', function(reason)
     local discord = GetPlayerIdentifierByType(src, 'discord')
     if discord then usedDiscords[discord] = nil end
     if not QBX.Players[src] then return end
-    GlobalState.PlayerCount -= 1
+    GlobalState.PlayerCount = GetNumPlayerIndices()
     local player = QBX.Players[src]
     player.PlayerData.lastLoggedOut = os.time()
     logger.log({
