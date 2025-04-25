@@ -64,7 +64,7 @@ end
 ---@param source Source
 ---@param item string name
 function functions.UseItem(source, item) -- luacheck: ignore
-    exports.qbx_core:UseItem(source, item)
+    assert(GetResourceState('qb-inventory') ~= 'started', 'qb-inventory is not compatible with qbx_core. use ox_inventory instead')
 end
 
 local discordLink = GetConvar('qbx:discordlink', 'discord.gg/qbox')
@@ -118,8 +118,7 @@ end
 
 ---@deprecated use https://overextended.dev/ox_inventory/Functions/Server#search
 functions.HasItem = function(source, items, amount) -- luacheck: ignore
-    return exports['qb-inventory']:HasItem(source, items, amount)
-    --[[amount = amount or 1
+    amount = amount or 1
     local count = exports.ox_inventory:Search(source, 'count', items)
     if type(items) == 'table' and type(count) == 'table' then
         for _, v in pairs(count) do
@@ -129,7 +128,7 @@ functions.HasItem = function(source, items, amount) -- luacheck: ignore
         end
         return true
     end
-    return count >= amount]]--
+    return count >= amount
 end
 
 ---@deprecated use qbx.getVehiclePlate from modules/lib.lua
