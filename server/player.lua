@@ -966,6 +966,11 @@ function CreatePlayer(playerData, Offline)
     --Player Specific Logging
     ---@param data table event, message, data, playerSrc, targetSrc, resource
     function self.Functions.Log(data)
+        if GetResourceState('bstar-logging') ~= 'started' then
+            lib.print.error('bstar-logging resource is not started. Logging skipped.')
+            return
+        end
+
         exports['bstar-logging']:CreateLog('Player '..data.event, data.message, data.data or {}, data.playerSrc or self.PlayerData.source, data.targetSrc, data.resource or GetInvokingResource())
     end
 

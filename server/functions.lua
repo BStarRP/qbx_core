@@ -572,6 +572,12 @@ exports('DeleteVehicle', DeleteVehicle)
 ---@param data table data.event, data.message, data.data, data.playerSrc, data.targetSrc, data.resource
 function Log(data)
     if not data or type(data) ~= 'table' then return end
+
+    if GetResourceState('bstar-logging') ~= 'started' then
+        lib.print.error('bstar-logging resource is not started. Logging skipped.')
+        return
+    end
+
     local resource = data.resource or GetInvokingResource()
     exports['bstar-logging']:CreateLog(data.event, data.message, data.data, data.source, data.target, resource)
 end
