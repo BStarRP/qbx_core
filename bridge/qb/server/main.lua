@@ -14,7 +14,7 @@ qbCoreCompat.Shared = require 'bridge.qb.shared.main'
 qbCoreCompat.Shared.Jobs = GetJobs()
 qbCoreCompat.Shared.Gangs = GetGangs()
 --qbCoreCompat.Shared.Items = GetItems()
---qbCoreCompat.Shared.Weapons = GetWeapons()
+qbCoreCompat.Shared.Weapons = GetWeapons()
 qbCoreCompat.Players = QBX.Players
 qbCoreCompat.Player = require 'bridge.qb.server.player'
 qbCoreCompat.Player_Buckets = QBX.Player_Buckets
@@ -122,3 +122,4 @@ local createQbExport = require 'bridge.qb.shared.export-function'
 createQbExport('GetCoreObject', function()
     return qbCoreCompat
 end)
+

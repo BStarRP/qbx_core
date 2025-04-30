@@ -21,7 +21,7 @@ function Notify(text, notifyType, duration, icon, iconColor, animation, sound, s
 
     --type set & duration
     local notifyType = notifyType or 'inform'
-    if notifyType == 'primary' then type = 'inform' end
+    if notifyType == 'primary' then notifyType = 'inform' end
     duration = duration or 3500
 
     lib.notify({

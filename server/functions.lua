@@ -574,7 +574,7 @@ function Log(data)
     if not data or type(data) ~= 'table' then return end
 
     if GetResourceState('bstar-logging') ~= 'started' then
-        lib.print.error('bstar-logging resource is not started. Logging skipped.')
+        lib.print.warn('bstar-logging resource is not started. Logging skipped.')
         return
     end
 

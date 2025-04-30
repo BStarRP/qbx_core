@@ -17,6 +17,10 @@ AddEventHandler('chatMessage', function(_, _, message)
     end
 end)
 
+exports.chat:registerMessageHook(function(source, outMessage, hookRef)
+    TriggerClientEvent('chat:clear', -1)
+end)
+
 AddEventHandler('playerJoining', function()
     local src = source --[[@as string]]
     local discord = GetPlayerIdentifierByType(src, 'discord')

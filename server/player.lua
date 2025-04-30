@@ -891,7 +891,7 @@ function CreatePlayer(playerData, Offline)
     ---@return boolean success
     function self.Functions.AddItem(item, amount, slot, metadata)
         assert(not self.Offline, 'unsupported for offline players')
-        return exports.ox_inventory:AddItem(self.PlayerData.source, oxItemCompat(item), amount, metadata, slot)
+        return exports.ox_inventory:AddItem(self.PlayerData.source, item, amount, metadata, slot)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -901,7 +901,7 @@ function CreatePlayer(playerData, Offline)
     ---@return boolean success
     function self.Functions.RemoveItem(item, amount, slot)
         assert(not self.Offline, 'unsupported for offline players')
-        return exports.ox_inventory:RemoveItem(self.PlayerData.source, oxItemCompat(item), amount, nil, slot)
+        return exports.ox_inventory:RemoveItem(self.PlayerData.source, item, amount, nil, slot)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -909,7 +909,7 @@ function CreatePlayer(playerData, Offline)
     ---@return any table
     function self.Functions.GetItemBySlot(slot)
         assert(not self.Offline, 'unsupported for offline players')
-        return qbItemCompat(exports.ox_inventory:GetSlot(self.PlayerData.source, slot))
+        return exports.ox_inventory:GetSlot(self.PlayerData.source, slot)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -917,7 +917,7 @@ function CreatePlayer(playerData, Offline)
     ---@return any table
     function self.Functions.GetItemByName(itemName)
         assert(not self.Offline, 'unsupported for offline players')
-        return qbItemCompat(exports.ox_inventory:GetSlotWithItem(self.PlayerData.source, oxItemCompat(itemName)))
+        return exports.ox_inventory:GetSlotWithItem(self.PlayerData.source, item)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -925,7 +925,7 @@ function CreatePlayer(playerData, Offline)
     ---@return any table
     function self.Functions.GetItemsByName(itemName)
         assert(not self.Offline, 'unsupported for offline players')
-        return qbItemCompat(exports.ox_inventory:GetSlotsWithItem(self.PlayerData.source, oxItemCompat(itemName)))
+        return exports.ox_inventory:GetSlotsWithItem(self.PlayerData.source, item)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -970,7 +970,7 @@ function CreatePlayer(playerData, Offline)
     ---@param data table event, message, data, playerSrc, targetSrc, resource
     function self.Functions.Log(data)
         if GetResourceState('bstar-logging') ~= 'started' then
-            lib.print.error('bstar-logging resource is not started. Logging skipped.')
+            lib.print.warn('bstar-logging resource is not started. Logging skipped.')
             return
         end
 
@@ -1288,22 +1288,16 @@ exports('SetCharInfo', SetCharInfo)
 ---@param actionType 'add' | 'remove' | 'set'
 ---@param reason? string
 ---@param difference? number
-local function emitMoneyEvents(source, playerMoney, moneyType, amount, actionType, reason, difference)
+local function emitMoneyEvents(source, playerMoney, moneyType, amount, actionType, isMinus, reason)
     local isSet = actionType == 'set'
     local isRemove = actionType == 'remove'
 
-    TriggerClientEvent('hud:client:OnMoneyChange', source, moneyType, isSet and math.abs(difference) or amount, isSet and difference < 0 or isRemove, reason)
+    TriggerClientEvent('hud:client:OnMoneyChange', source, moneyType, amount, isMinus, reason)
     TriggerClientEvent('QBCore:Client:OnMoneyChange', source, moneyType, amount, actionType, reason)
     TriggerEvent('QBCore:Server:OnMoneyChange', source, moneyType, amount, actionType, reason)
 
-    if moneyType == 'bank' and isRemove then
-        TriggerClientEvent('qb-phone:client:RemoveBankMoney', source, amount)
-    end
-
-    local oxMoneyType = moneyType == 'cash' and 'money' or moneyType
-
-    if accountsAsItems[oxMoneyType] then
-        exports.ox_inventory:SetItem(source, oxMoneyType, playerMoney[moneyType])
+    if accountsAsItems[moneyType] then
+        exports.ox_inventory:SetItem(source, moneyType, playerMoney[moneyType])
     end
 end
 

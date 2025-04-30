@@ -19,17 +19,24 @@ end
 
 ---@deprecated use https://overextended.dev/ox_inventory/Functions/Client#search
 functions.HasItem = function(items, amount)
-    amount = amount or 1
-    local count = exports.ox_inventory:Search('count', items)
-    if type(items) == 'table' and type(count) == 'table' then
-        for _, v in pairs(count) do
-            if v < amount then
-                return false
+	if not items then return false end
+	amount = amount ~= nil and amount or 1
+    local found = true
+    if type(items) == 'table' then
+        for k, v in pairs(items) do
+            local count = exports.ox_inventory:Search('count', k)
+            if count and count < v then
+                found = false
             end
         end
-        return true
+
+    elseif type(items) == 'string' then
+        local count = exports.ox_inventory:Search('count', items)
+        if count and count < amount then
+            found = false
+        end
     end
-    return count >= amount
+    return found
 end
 
 -- Utility
@@ -48,13 +55,13 @@ functions.DrawText = function(x, y, width, height, scale, r, g, b, a, text)
 end
 
 ---@deprecated use qbx.drawText3d from modules/lib.lua
-functions.DrawText3D = function(x, y, z, text)
+functions.DrawText3D = function(x, y, z, text, color)
     qbx.drawText3d({
         text = text,
         coords = vec3(x, y, z),
         scale = 0.35,
         font = 4,
-        color = vec4(255, 255, 255, 215)
+        color = color or vec4(255, 255, 255, 215)
     })
 end
 
@@ -84,35 +91,71 @@ functions.LoadAnimSet = lib.requestAnimSet
 ---@param prop? unknown
 ---@param onFinish fun()
 ---@param onCancel fun()
-function functions.Progressbar(_, label, duration, useWhileDead, canCancel, disableControls, animation, prop, _, onFinish, onCancel)
-    if lib.progressBar({
-        duration = duration,
-        label = label,
-        useWhileDead = useWhileDead,
-        canCancel = canCancel,
-        disable = {
-            move = disableControls?.disableMovement,
-            car = disableControls?.disableCarMovement,
-            combat = disableControls?.disableCombat,
-            mouse = disableControls?.disableMouse,
-        },
-        anim = {
-            dict = animation?.animDict,
-            clip = animation?.anim,
-            flags = animation?.flags
-        },
-        prop = {
-            model = prop?.model,
-            pos = prop?.coords,
-            rot = prop?.rotation,
-        },
-    }) then
-        if onFinish then
-            onFinish()
+function functions.Progressbar(_, label, duration, useWhileDead, canCancel, disableControls, animation, prop, _, onFinish, onCancel, icon)
+    if GetResourceState('ls_progressbar') ~= 'started' then
+        if lib.progressBar({
+            duration = duration,
+            label = label,
+            useWhileDead = useWhileDead,
+            canCancel = canCancel,
+            disable = {
+                move = disableControls?.disableMovement,
+                car = disableControls?.disableCarMovement,
+                combat = disableControls?.disableCombat,
+                mouse = disableControls?.disableMouse,
+            },
+            anim = {
+                dict = animation?.animDict,
+                clip = animation?.anim,
+                flags = animation?.flags,
+                emote = animation?.emote,
+            },
+            prop = {
+                model = prop?.model,
+                pos = prop?.coords,
+                rot = prop?.rotation,
+            },
+        }) then
+            if onFinish then
+                onFinish()
+            end
+        else
+            if onCancel then
+                onCancel()
+            end
         end
     else
-        if onCancel then
-            onCancel()
+        if exports.ls_progressbar:progressBar({
+            duration = duration,
+            label = label,
+            useWhileDead = useWhileDead,
+            canCancel = canCancel,
+            icon = icon,
+            disable = {
+                move = disableControls?.disableMovement,
+                car = disableControls?.disableCarMovement,
+                combat = disableControls?.disableCombat,
+                mouse = disableControls?.disableMouse,
+            },
+            anim = {
+                dict = animation?.animDict,
+                clip = animation?.anim,
+                flags = animation?.flags,
+                emote = animation?.emote,
+            },
+            prop = {
+                model = prop?.model,
+                pos = prop?.coords,
+                rot = prop?.rotation,
+            },
+        }) then
+            if onFinish then
+                onFinish()
+            end
+        else
+            if onCancel then
+                onCancel()
+            end
         end
     end
 end

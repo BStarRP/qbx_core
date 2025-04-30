@@ -56,7 +56,7 @@ end)
 ---@param h number
 RegisterNetEvent('QBCore:Command:TeleportToCoords', function(x, y, z, h)
     if GetInvokingResource() then return end
-    
+
     SetPedCoordsKeepVehicle(cache.ped, x, y, z)
     SetEntityHeading(cache.ped, h or GetEntityHeading(cache.ped))
 end)
@@ -164,6 +164,36 @@ RegisterNetEvent('QBCore:Notify', function(text, notifyType, duration, subTitle,
 end)
 
 -- Me command
+---@param bagName string
+---@param value string
+---@diagnostic disable-next-line: param-type-mismatch
+AddStateBagChangeHandler('ooc', nil, function(bagName, _, value)
+    if not value then return end
+
+    local playerId = GetPlayerFromStateBagName(bagName)
+
+    if not playerId or not NetworkIsPlayerActive(playerId) then return end
+
+    local isLocalPlayer = playerId == cache.playerId
+    local playerPed = isLocalPlayer and cache.ped or GetPlayerPed(playerId)
+
+    -- Here we do a entity check to see if the player exsist within each clients scope --
+    if not DoesEntityExist(playerPed) then return end
+
+    -- Distance check to make sure that players do not see others me from 100s of meters away --
+    if not isLocalPlayer and #(GetEntityCoords(playerPed) - GetEntityCoords(cache.ped)) > 25 then return end
+
+    CreateThread(function()
+        local displayTime = 5000 + GetGameTimer()
+        while displayTime > GetGameTimer() do
+            playerPed = isLocalPlayer and cache.ped or GetPlayerPed(playerId)
+            local coords = GetEntityCoords(playerPed)
+            coords = vector3(coords.x, coords.y, coords.z + 0.35)
+            qbx.drawText3d({text = '©️ '..value, coords = coords, color = vec4(255, 255, 255, 215), font = 10, enableDropShadow = true, enableOutline = true, disableDrawRect = true})
+            Wait(0)
+        end
+    end)
+end)
 
 ---@param bagName string
 ---@param value string
@@ -188,7 +218,71 @@ AddStateBagChangeHandler('me', nil, function(bagName, _, value)
         local displayTime = 5000 + GetGameTimer()
         while displayTime > GetGameTimer() do
             playerPed = isLocalPlayer and cache.ped or GetPlayerPed(playerId)
-            qbx.drawText3d({text = value, coords = GetEntityCoords(playerPed)})
+            local coords = GetEntityCoords(playerPed)
+            coords = vector3(coords.x, coords.y, coords.z + 0.35)
+            qbx.drawText3d({text = '🤔 '..value, coords = coords, color = vec4(102, 179, 255, 215), font = 10, enableDropShadow = true, enableOutline = true, disableDrawRect = true})
+            Wait(0)
+        end
+    end)
+end)
+
+---@param bagName string
+---@param value string
+---@diagnostic disable-next-line: param-type-mismatch
+AddStateBagChangeHandler('do', nil, function(bagName, _, value)
+    if not value then return end
+
+    local playerId = GetPlayerFromStateBagName(bagName)
+
+    if not playerId or not NetworkIsPlayerActive(playerId) then return end
+
+    local isLocalPlayer = playerId == cache.playerId
+    local playerPed = isLocalPlayer and cache.ped or GetPlayerPed(playerId)
+
+    -- Here we do a entity check to see if the player exsist within each clients scope --
+    if not DoesEntityExist(playerPed) then return end
+
+    -- Distance check to make sure that players do not see others me from 100s of meters away --
+    if not isLocalPlayer and #(GetEntityCoords(playerPed) - GetEntityCoords(cache.ped)) > 25 then return end
+
+    CreateThread(function()
+        local displayTime = 5000 + GetGameTimer()
+        while displayTime > GetGameTimer() do
+            playerPed = isLocalPlayer and cache.ped or GetPlayerPed(playerId)
+            local coords = GetEntityCoords(playerPed)
+            coords = vector3(coords.x, coords.y, coords.z + 0.35)
+            qbx.drawText3d({text = '💪 '..value, coords = coords, color = vec4(102, 255, 102, 215), font = 10, enableDropShadow = true, enableOutline = true, disableDrawRect = true})
+            Wait(0)
+        end
+    end)
+end)
+
+---@param bagName string
+---@param value string
+---@diagnostic disable-next-line: param-type-mismatch
+AddStateBagChangeHandler('sign', nil, function(bagName, _, value)
+    if not value then return end
+
+    local playerId = GetPlayerFromStateBagName(bagName)
+
+    if not playerId or not NetworkIsPlayerActive(playerId) then return end
+
+    local isLocalPlayer = playerId == cache.playerId
+    local playerPed = isLocalPlayer and cache.ped or GetPlayerPed(playerId)
+
+    -- Here we do a entity check to see if the player exsist within each clients scope --
+    if not DoesEntityExist(playerPed) then return end
+
+    -- Distance check to make sure that players do not see others me from 100s of meters away --
+    if not isLocalPlayer and #(GetEntityCoords(playerPed) - GetEntityCoords(cache.ped)) > 25 then return end
+
+    CreateThread(function()
+        local displayTime = 5000 + GetGameTimer()
+        while displayTime > GetGameTimer() do
+            playerPed = isLocalPlayer and cache.ped or GetPlayerPed(playerId)
+            local coords = GetEntityCoords(playerPed)
+            coords = vector3(coords.x, coords.y, coords.z + 0.35)
+            qbx.drawText3d({text = '🤙 '..value, coords = coords, color = vec4(255, 255, 102, 215), font = 10, enableDropShadow = true, enableOutline = true, disableDrawRect = true})
             Wait(0)
         end
     end)

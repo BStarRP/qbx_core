@@ -332,45 +332,20 @@ lib.addCommand('setgang', {
 end)
 
 lib.addCommand('ooc', {
-    help = locale('command.ooc.help')
+    help = locale('command.ooc.help'),
+    params = {
+        { name = locale('command.ooc.params.message.name'), help = locale('command.ooc.params.message.help'), type = 'string' }
+    }
 }, function(source, args)
-    local message = table.concat(args, ' ')
-    local players = GetPlayers()
-    local player = GetPlayer(source)
-    if not player then return end
+    args[1] = args[locale('command.ooc.params.message.name')]
+    args[locale('command.ooc.params.message.name')] = nil
+    if #args < 1 then Notify(source, locale('error.missing_args2'), 'error') return end
+    local msg = table.concat(args, ' '):gsub('[~<].-[>~]', '')
+    local playerState = Player(source).state
+    playerState:set('ooc', msg, true)
 
-    local playerCoords = GetEntityCoords(GetPlayerPed(source))
-    for _, v in pairs(players) do
-        if v == source then
-            exports.chat:addMessage(v --[[@as Source]], {
-                color = { 0, 0, 255},
-                multiline = true,
-                args = {('OOC | %s'):format(GetPlayerName(source)), message}
-            })
-        elseif #(playerCoords - GetEntityCoords(GetPlayerPed(v))) < 20.0 then
-            exports.chat:addMessage(v --[[@as Source]], {
-                color = { 0, 0, 255},
-                multiline = true,
-                args = {('OOC | %s'):format(GetPlayerName(source)), message}
-            })
-        elseif IsPlayerAceAllowed(v --[[@as string]], 'admin') then
-            if IsOptin(v --[[@as Source]]) then
-                exports.chat:addMessage(v--[[@as Source]], {
-                    color = { 0, 0, 255},
-                    multiline = true,
-                    args = {('Proximity OOC | %s'):format(GetPlayerName(source)), message}
-                })
-                logger.log({
-                    source = 'qbx_core',
-                    webhook  = 'ooc',
-                    event = 'OOC',
-                    color = 'white',
-                    tags = config.logging.role,
-                    message = ('**%s** (CitizenID: %s | ID: %s) **Message:** %s'):format(GetPlayerName(source), player.PlayerData.citizenid, source, message)
-                })
-            end
-        end
-    end
+    -- We have to reset the playerState since the state does not get replicated on StateBagHandler if the value is the same as the previous one --
+    playerState:set('ooc', nil, true)
 end)
 
 lib.addCommand('me', {
@@ -388,6 +363,40 @@ lib.addCommand('me', {
 
     -- We have to reset the playerState since the state does not get replicated on StateBagHandler if the value is the same as the previous one --
     playerState:set('me', nil, true)
+end)
+
+lib.addCommand('do', {
+    help = locale('command.me.help'),
+    params = {
+        { name = locale('command.do.params.message.name'), help = locale('command.do.params.message.help'), type = 'string' }
+    }
+}, function(source, args)
+    args[1] = args[locale('command.do.params.message.name')]
+    args[locale('command.do.params.message.name')] = nil
+    if #args < 1 then Notify(source, locale('error.missing_args2'), 'error') return end
+    local msg = table.concat(args, ' '):gsub('[~<].-[>~]', '')
+    local playerState = Player(source).state
+    playerState:set('do', msg, true)
+
+    -- We have to reset the playerState since the state does not get replicated on StateBagHandler if the value is the same as the previous one --
+    playerState:set('do', nil, true)
+end)
+
+lib.addCommand('sign', {
+    help = locale('command.sign.help'),
+    params = {
+        { name = locale('command.sign.params.message.name'), help = locale('command.sign.params.message.help'), type = 'string' }
+    }
+}, function(source, args)
+    args[1] = args[locale('command.sign.params.message.name')]
+    args[locale('command.sign.params.message.name')] = nil
+    if #args < 1 then Notify(source, locale('error.missing_args2'), 'error') return end
+    local msg = table.concat(args, ' '):gsub('[~<].-[>~]', '')
+    local playerState = Player(source).state
+    playerState:set('sign', msg, true)
+
+    -- We have to reset the playerState since the state does not get replicated on StateBagHandler if the value is the same as the previous one --
+    playerState:set('sign', nil, true)
 end)
 
 lib.addCommand('id', {help = locale('info.check_id')}, function(source)

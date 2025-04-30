@@ -375,7 +375,7 @@ if isServer then
         if not vehicleType then
             warn(('No vehicle type found for model: %s temp vehicle was created and taken in type'):format(
                 model))
-                
+
             local tempVehicle = CreateVehicle(model, 0, 0, -200, 0, true, true)
             while not DoesEntityExist(tempVehicle) do Wait(0) end
 
@@ -656,6 +656,24 @@ else
         for id, enable in pairs(extras) do
             qbx.setVehicleExtra(vehicle, id, enable)
         end
+    end
+
+    ---Sets all the extras of the given vehicle.
+    ---@param vehicle integer
+    function qbx.isVehicleBackEngine(vehicle)
+        local model = GetEntityModel(vehicle)
+        if not model then return false end
+        local vehicleName = GetDisplayNameFromVehicleModel(model):lower()
+        return qbx.backEngineVehicles[vehicleName] == true
+    end
+
+    ---Sets all the extras of the given vehicle.
+    ---@param vehicle integer
+    function qbx.isVehicleElectic(vehicle)
+        local model = GetEntityModel(vehicle)
+        if not model then return false end
+        local vehicleName = GetDisplayNameFromVehicleModel(model):lower()
+        return qbx.electricVehicles[vehicleName] == true
     end
 
     ---Returns if the local ped is wearing gloves.

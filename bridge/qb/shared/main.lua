@@ -119,6 +119,16 @@ qbShared.FirstToUpper = function(str)
     return qbx.string.capitalize(str)
 end
 
+qbShared.IsBackEngine = function(vehicle)
+    if not vehicle then return false end
+    return qbx.isVehicleBackEngine(vehicle)
+end
+
+qbShared.IsElectric = function(vehicle)
+    if not vehicle then return false end
+    return qbx.isVehicleElectric(vehicle)
+end
+
 ---@deprecated use qbx.math.round from modules/lib.lua
 qbShared.Round = qbx.math.round
 

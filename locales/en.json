@@ -164,11 +164,28 @@
                 "grade": { "name": "grade", "help": "Gang grade" }
             }
         },
-        "ooc": { "help": "OOC Chat Message" },
-        "me": {
-            "help": "Show local message",
+        "ooc": {
+            "help": "Show local ooc message",
             "params": {
-                "message": { "name": "message", "help": "Message to send" }
+                "message": { "name": "message", "help": "What you say OOC" }
+            }
+        },
+        "me": {
+            "help": "Show local me message",
+            "params": {
+                "message": { "name": "message", "help": "What you think" }
+            }
+        },
+        "do": {
+            "help": "Show local do message",
+            "params": {
+                "message": { "name": "message", "help": "What you do" }
+            }
+        },
+        "sign": {
+            "help": "Show local sign message",
+            "params": {
+                "message": { "name": "message", "help": "What you sign" }
             }
         }
     }

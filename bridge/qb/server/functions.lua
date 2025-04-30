@@ -118,17 +118,24 @@ end
 
 ---@deprecated use https://overextended.dev/ox_inventory/Functions/Server#search
 functions.HasItem = function(source, items, amount) -- luacheck: ignore
-    amount = amount or 1
-    local count = exports.ox_inventory:Search(source, 'count', items)
-    if type(items) == 'table' and type(count) == 'table' then
-        for _, v in pairs(count) do
-            if v < amount then
-                return false
+	if not items then return false end
+	amount = amount ~= nil and amount or 1
+    local found = true
+    if type(items) == 'table' then
+        for k, v in pairs(items) do
+            local count = exports.ox_inventory:Search(source, 'count', k)
+            if count and count < v then
+                found = false
             end
         end
-        return true
+
+    elseif type(items) == 'string' then
+        local count = exports.ox_inventory:Search(source, 'count', items)
+        if count and count < amount then
+            found = false
+        end
     end
-    return count >= amount
+    return found
 end
 
 ---@deprecated use qbx.getVehiclePlate from modules/lib.lua
