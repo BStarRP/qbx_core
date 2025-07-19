@@ -1499,18 +1499,17 @@ function DeleteCharacter(source, citizenid)
     local player = GetPlayerByCitizenId(citizenid)
 
     if not player and result and discord == result.discord then
-        CreateThread(function()
-            local charname = result.charinfo.firstname .. ' ' .. result.charinfo.lastname
-            local success = storage.deletePlayer(citizenid)
-            if success then
-                Log({
-                    event = 'Character Deleted',
-                    message = string.format('%s has deleted a character: %s', GetPlayerName(source), charname),
-                    data = {},
-                    source = source,
-                })
-            end
-        end)
+        success = storage.deletePlayer(citizenid)
+        local charname = result.charinfo.firstname .. ' ' .. result.charinfo.lastname
+        local success = storage.deletePlayer(citizenid)
+        if success then
+            Log({
+                event = 'Character Deleted',
+                message = string.format('%s has deleted a character: %s', GetPlayerName(source), charname),
+                data = {},
+                source = source,
+            })
+        end
     else
         ScriptAlert({
             alert = 'Delete Failed',
