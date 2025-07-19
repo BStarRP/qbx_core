@@ -1492,6 +1492,7 @@ exports('GetMoney', GetMoney)
 
 ---@param source Source
 ---@param citizenid string
+---@return boolean success
 function DeleteCharacter(source, citizenid)
     local discord = GetPlayerIdentifierByType(source --[[@as string]], 'discord')
     local result = storage.fetchPlayerEntity(citizenid)
@@ -1518,7 +1519,11 @@ function DeleteCharacter(source, citizenid)
             ban = true,
         })
     end
+
+    return success
 end
+
+lib.callback.register('qbx_core:server:deleteCharacter', DeleteCharacter)
 
 ---@param citizenid string
 function ForceDeleteCharacter(citizenid)

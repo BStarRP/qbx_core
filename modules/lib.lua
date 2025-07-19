@@ -388,12 +388,13 @@ if isServer then
         local veh, netId
         while attempts < 3 do
             veh = CreateVehicleServerSetter(model, vehicleType, coords.x, coords.y, coords.z, coords.w)
-            while not DoesEntityExist(veh) do Wait(0) end
-            while GetVehicleNumberPlateText(veh) == '' do Wait(0) end
 
             if bucket and bucket > 0 then
                 exports.qbx_core:SetEntityBucket(veh, bucket)
             end
+
+            while not DoesEntityExist(veh) do Wait(0) end
+            while GetVehicleNumberPlateText(veh) == '' do Wait(0) end
 
             if ped then
                 SetPedIntoVehicle(ped, veh, -1)
