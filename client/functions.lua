@@ -12,8 +12,8 @@ local positionConfig = require 'config.shared'.notifyPosition
 function Notify(text, notifyType, duration, icon, iconColor, animation, sound, style, position)
     local title, description
     if type(text) == 'table' then
-        title = text.text or 'Missing text!'
-        description = text.title or nil
+        title = text.caption
+        description = text.text
     else
         description = text
     end
@@ -25,7 +25,7 @@ function Notify(text, notifyType, duration, icon, iconColor, animation, sound, s
     duration = duration or 3500
 
     lib.notify({
-        id = title,
+        id = text,
         title = title,
         description = description,
         duration = duration,

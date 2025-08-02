@@ -6,6 +6,37 @@ qbx.math = {}
 qbx.table = {}
 qbx.array = {}
 
+qbx.vehicleModelNames = {
+	['schwarze'] = 'schwarzer',
+	['cavcade'] = 'cavalcade2',
+	['landstal'] = 'landstalker',
+	['landstlkr2'] = 'landstalker2',
+	['dilettan'] = 'dilettante',
+	['stingerg'] = 'stingergt',
+	['trophy2'] = 'trophytruck2',
+	['bfinject'] = 'bfinjection',
+	['rancherx'] = 'rancherxl',
+	['sandkin2'] = 'sandking2',
+	['trophy'] = 'trophytruck',
+	['cogcabri'] = 'cogcabrio',
+	['cognosc'] = 'cognoscenti',
+	['schafter'] = 'schafter2',
+	['tailgate'] = 'tailgater' ,
+	['washingt'] = 'washington',
+	['carboniz'] = 'carbonizzare',
+	['khamel'] = 'khamelion',
+	['verlier'] = 'verlierer2',
+	['buccanee'] = 'buccaneer',
+	['buccanee2'] = 'buccaneer2',
+	['dominato'] = 'dominator',
+	['dominato2'] = 'dominator2',
+	['dominato3'] = 'dominator3',
+	['niteshad'] = 'nightshade',
+	['rloader'] = 'ratloader',
+	['rloader2'] = 'ratloader2',
+	['buffalo02'] = 'buffalo2',
+}
+
 qbx.backEngineVehicles = {
     ['ninef'] = true,
     ['tenf'] = true,
@@ -194,6 +225,42 @@ qbx.duffelbagIndexes = lib.table.freeze({
     })
 })
 
+qbx.skillLabels = {
+    ['strength'] = 'Strength',
+    ['agility'] = 'Agility',
+    ['intelligence'] = 'Intelligence',
+    ['stamina'] = 'Stamina',
+    ['perception'] = 'Perception',
+    ['charisma'] = 'Charisma',
+    ['luck'] = 'Luck',
+}
+
+qbx.licenseLabels = {
+    ['weapon'] = 'Weapon License',
+    ['fishing'] = 'Fishing License',
+    ['hunting'] = 'Hunting License',
+    ['driving'] = 'Driving License',
+    ['pilot'] = 'Pilot License',
+    ['boating'] = 'Boating License',
+    ['driving_truck'] = 'Truck License',
+    ['driving_motorcycle'] = 'Motorcycle License',
+}
+
+qbx.diseaseLabels = {
+    ['addiction'] = 'Drug Addiction',
+    ['vampirism'] = 'Vampirism',
+    ['lycanthropy'] = 'Lycanthropy',
+    ['morphism'] = 'Morphism',
+    ['zombism'] = 'Zombism',
+    ['angelic'] = 'Angelic',
+}
+
+qbx.reputationLabels = {
+    ['civilian'] = 'Civilian',
+    ['criminal'] = 'Criminal',
+    ['prisoner'] = 'Prisoner',
+    ['responder'] = 'First Responder'
+}
 
 ---Returns the given string with its trailing whitespaces removed.
 ---@param str string
@@ -207,6 +274,7 @@ end
 ---@param str string
 ---@return string
 function qbx.string.capitalize(str)
+    str = str:lower()
     local capitalized = str:gsub('^%l', string.upper)
     return capitalized
 end
@@ -230,6 +298,23 @@ function qbx.table.size(tbl)
         size += 1
     end
     return size
+end
+
+--sorts the given table by its keys A-Z
+---@param tbl table
+---@return table
+function qbx.table.sortPairsByKeys(t)
+    local a = {}
+    for n in pairs(t) do a[#a+1] = n end
+    table.sort(a)
+    local i = 0
+    local iter = function ()
+        i = i + 1
+        if a[i] == nil then return nil
+        else return a[i], t[a[i]]
+        end
+    end
+    return iter
 end
 
 ---Maps and returns the values of the given table by the given subfield.
@@ -660,6 +745,15 @@ else
     end
 
     ---Sets all the extras of the given vehicle.
+    ---@param model integer
+    function qbx.getVehicleModelName(vehicle)
+        local model = GetEntityModel(vehicle)
+        if not model then return false end
+        local modelName = GetDisplayNameFromVehicleModel(model):lower()
+        return qbx.vehicleModelNames[modelName] and qbx.vehicleModelNames[modelName] or modelName
+    end
+
+    ---Sets all the extras of the given vehicle.
     ---@param vehicle integer
     function qbx.isVehicleBackEngine(vehicle)
         local model = GetEntityModel(vehicle)
@@ -670,7 +764,7 @@ else
 
     ---Sets all the extras of the given vehicle.
     ---@param vehicle integer
-    function qbx.isVehicleElectic(vehicle)
+    function qbx.isVehicleElectric(vehicle)
         local model = GetEntityModel(vehicle)
         if not model then return false end
         local vehicleName = GetDisplayNameFromVehicleModel(model):lower()
@@ -693,6 +787,47 @@ else
         local model = GetEntityModel(cache.ped)
         local tble = qbx.duffelbagIndexes[model == `mp_m_freemode_01` and 'male' or 'female']
         return tble[torsoIndex] == true
+    end
+
+    ---Gets the image URL for a specific item.
+    ---@param item string
+    ---@return string
+    function qbx.getItemImageURL(item)
+        local ITEM = exports.ox_inventory:Items(item)
+        if ITEM then
+            if ITEM.client?.image then
+                return ITEM.client.image
+            end
+        end
+        return "nui://ox_inventory/web/images/"..item..'.png'
+    end
+
+    ---Gets label for specific skill.
+    ---@param skill string
+    ---@return string
+    function qbx.getSkillLabel(skill)
+        return qbx.skillLabels[skill] or skill
+    end
+
+    ---Gets label for specific license.
+    ---@param license string
+    ---@return string
+    function qbx.getLicenseLabel(license)
+        return qbx.licenseLabels[license] or license
+    end
+
+    ---Gets label for specific disease.
+    ---@param disease string
+    ---@return string
+    function qbx.getDiseaseLabel(disease)
+        return qbx.diseaseLabels[disease] or disease
+    end
+
+    ---Gets label for specific reputation.
+    ---@param reputation string
+    ---@return string
+    function qbx.getReputationLabel(reputation)
+        return qbx.reputationLabels[reputation] or reputation
     end
 
     ---Attempts to load an audio bank and returns whether it was successful.

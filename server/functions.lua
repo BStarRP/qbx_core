@@ -28,10 +28,10 @@ end
 exports('GetSource', GetSource)
 
 ---@return integer source of the player with the matching identifier or 0 if no player found
-function GetUserId(source)
+function GetUserId(source, identifier)
     local src = source --[[@as string]]
-    local discord = GetPlayerIdentifierByType(src, 'discord')
-    local userId = storage.fetchUserByIdentifier(discord)
+    local identifier = identifier or GetPlayerIdentifierByType(src, 'discord')
+    local userId = storage.fetchUserByIdentifier(identifier)
     return userId
 end
 
@@ -56,7 +56,7 @@ function GetUserIdByPlayerIdentifier(identifier)
         local idens = GetPlayerIdentifiers(src)
         for _, id in pairs(idens) do
             if identifier == id then
-                return QBX.Players[src].PlayerData.userId
+                return QBX.Players[src].PlayerData.userid
             end
         end
     end
@@ -81,7 +81,7 @@ exports('GetPlayerByCitizenId', GetPlayerByCitizenId)
 ---@return Player?
 function GetPlayerByUserId(userId)
     for src in pairs(QBX.Players) do
-        if QBX.Players[src].PlayerData.userId == userId then
+        if QBX.Players[src].PlayerData.userid == userId then
             return QBX.Players[src]
         end
     end
@@ -398,11 +398,11 @@ function IsPlayerBanned(source)
         return true, ('You have been banned from the server! \n Reason: %s \n\n - open a ban appeal ticket in B⭐RP Discord!'):format(result.reason)
     else
         CreateThread(function()
-            if license2 then
-                storage.deleteBan({ license = license2 })
+            if identifiers.license2 then
+                storage.deleteBan({ license = identifiers.license2 })
             end
 
-            storage.deleteBan({ license = license })
+            storage.deleteBan({ license = identifiers.license })
         end)
     end
 
@@ -415,15 +415,15 @@ exports('IsPlayerBanned', IsPlayerBanned)
 function Notify(source, text, notifyType, duration, icon, iconColor, animation, sound, style, position)
     local title, description
     if type(text) == 'table' and text.caption then
-        title = text.text or 'Placeholder'
-        description = text.caption or nil
+        title = text.caption
+        description = text.text
     else
         description = text
     end
     local position = position or positionConfig
 
     TriggerClientEvent('ox_lib:notify', source, {
-        id = title,
+        id = text,
         title = title,
         description = description,
         duration = duration,

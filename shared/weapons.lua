@@ -32,6 +32,7 @@ return {
     [`weapon_pistol`] 				 = {name = 'weapon_pistol', 		label = 'Pistol', 				    weapontype = 'Pistol',	ammotype = 'AMMO_PISTOL',	damagereason = 'Pistoled / Blasted / Plugged / Bust a cap in'},
     [`weapon_pistol_mk2`] 			 = {name = 'weapon_pistol_mk2', 	label = 'Pistol Mk2', 			    weapontype = 'Pistol',	ammotype = 'AMMO_PISTOL',	damagereason = 'Pistoled / Blasted / Plugged / Bust a cap in'},
     [`weapon_combatpistol`] 		 = {name = 'weapon_combatpistol', 	label = 'Combat Pistol', 			weapontype = 'Pistol',	ammotype = 'AMMO_PISTOL',	damagereason = 'Pistoled / Blasted / Plugged / Bust a cap in'},
+    [`WEAPON_SERVICEPISTOL`] 		 = {name = 'WEAPON_SERVICEPISTOL', 	label = 'Service Pistol', 			weapontype = 'Pistol',	ammotype = 'AMMO_PISTOL',	damagereason = 'Pistoled / Blasted / Plugged / Bust a cap in'},
     [`weapon_appistol`] 			 = {name = 'weapon_appistol', 		label = 'AP Pistol', 				weapontype = 'Pistol',	ammotype = 'AMMO_PISTOL',	damagereason = 'Pistoled / Blasted / Plugged / Bust a cap in'},
     [`weapon_stungun`] 				 = {name = 'weapon_stungun', 		label = 'Taser', 					weapontype = 'Pistol',	ammotype = 'AMMO_STUNGUN',	damagereason = 'Died'},
     [`weapon_pistol50`] 			 = {name = 'weapon_pistol50', 		label = 'Pistol .50 Cal', 			weapontype = 'Pistol',	ammotype = 'AMMO_PISTOL',	damagereason = 'Pistoled / Blasted / Plugged / Bust a cap in'},

@@ -2,18 +2,18 @@ return {
     updateInterval = 5, -- how often to update player data in minutes
 
     money = {
-        ---@alias MoneyType 'cash' | 'bank' | 'crypto'
-        ---@alias Money {cash: number, bank: number, crypto: number}
+        ---@alias MoneyType 'cash' | 'bank' | 'change' | 'markedcash'
+        ---@alias Money {cash: number, bank: number, change: number, markedcash: number}
         ---@type Money
-        moneyTypes = { cash = 500, markedcash = 0,  bank = 5000}, -- type = startamount - Add or remove money types for your server (for ex. blackmoney = 0), remember once added it will not be removed from the database!
-        dontAllowMinus = { 'cash', 'markedcash', 'crypto' }, -- Money that is not allowed going in minus
+        moneyTypes = { cash = 500, change = 0, markedcash = 0,  bank = 5000}, -- type = startamount - Add or remove money types for your server (for ex. blackmoney = 0), remember once added it will not be removed from the database!
+        dontAllowMinus = { 'cash', 'change', 'markedcash'}, -- Money that is not allowed going in minus
         paycheckTimeout = 10, -- The time in minutes that it will give the paycheck
         paycheckSociety = false -- If true paycheck will come from the society account that the player is employed at
     },
 
     player = {
-        hungerRate = 3.2, -- Rate at which hunger goes down.
-        thirstRate = 4.2,
+        hungerRate = 2.3, -- Rate at which hunger goes down.
+        thirstRate = 3.2,
         ---@enum BloodType
         bloodTypes = {
             'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-',
@@ -29,7 +29,7 @@ return {
             },
             AccountNumber = {
                 valueFunction = function()
-                    return 'US0' .. math.random(1, 9) .. 'QBX' .. math.random(1111, 9999) .. math.random(1111, 9999) .. math.random(11, 99)
+                    return 'US0' .. math.random(1, 9) .. 'BS' .. math.random(1111, 9999) .. math.random(1111, 9999) .. math.random(11, 99)
                 end,
             },
             PhoneNumber = {
@@ -44,7 +44,7 @@ return {
             },
             WalletId = {
                 valueFunction = function()
-                    return 'QB-' .. math.random(11111111, 99999999)
+                    return 'BS-' .. math.random(11111111, 99999999)
                 end,
             },
             SerialNumber = {
@@ -99,7 +99,7 @@ return {
     },
 
     giveVehicleKeys = function(src, plate, vehicle)
-        return exports.qbx_vehiclekeys:GiveKeys(src, vehicle)
+        return Entity(vehicle).state:set('ignitionkey', true, true)
     end,
 
     getSocietyAccount = function(accountName)
@@ -107,7 +107,7 @@ return {
     end,
 
     removeSocietyMoney = function(accountName, payment)
-        return exports['qb-business']:RemoveAccount(accountName, payment)
+        return exports['qb-business']:RemoveMoney(accountName, payment)
     end,
 
     ---Paycheck function

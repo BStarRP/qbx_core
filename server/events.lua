@@ -11,15 +11,13 @@ local usedDiscords = {}
 
 ---@param message string
 AddEventHandler('chatMessage', function(_, _, message)
-    if string.sub(message, 1, 1) == '/' then
-        CancelEvent()
-        return
-    end
+    CancelEvent()
+    --[TriggerEvent('chat:clear', -1)
 end)
 
-exports.chat:registerMessageHook(function(source, outMessage, hookRef)
-    TriggerClientEvent('chat:clear', -1)
-end)
+--[[exports.chat:registerMessageHook(function(source, outMessage, hookRef)
+    TriggerEvent('chat:clear', -1)
+end)]]--
 
 AddEventHandler('playerJoining', function()
     local src = source --[[@as string]]
@@ -82,8 +80,8 @@ end
 ---@param deferrals Deferrals
 local function onPlayerConnecting(name, _, deferrals)
     local src = source --[[@as string]]
-    local discord = GetPlayerIdentifierByType(src, 'discord')
-    local userId = storage.fetchUserByIdentifier(discord)
+    local identifiers = getIdentifiers(src)
+    identifiers.username = name
     deferrals.defer()
 
     -- Mandatory wait
@@ -95,25 +93,24 @@ local function onPlayerConnecting(name, _, deferrals)
         end
     end
 
-    if not discord then
+    if not identifiers.discord then
         deferrals.done(locale('error.no_valid_discord'))
-    elseif serverConfig.checkDuplicateDiscord and usedDiscords[discord] then
+    elseif serverConfig.checkDuplicateDiscord and usedDiscords[identifiers.discord] then
         deferrals.done(locale('error.duplicate_discord'))
     end
 
-    if not userId then
-        local identifiers = getIdentifiers(src)
-
-        identifiers.username = name
-
-        storage.createUser(identifiers)
-    end
+    storage.createUser(identifiers)
 
     local databaseTime = os.clock()
     local databasePromise = promise.new()
 
     -- conduct database-dependant checks
     CreateThread(function()
+        local userId = storage.fetchUserByIdentifier(identifiers.discord)
+        if not userId then
+            deferrals.done('No valid userid found!')
+        end
+
         deferrals.update(locale('info.checking_ban', name))
         local success, err = pcall(function()
             local isBanned, Reason = IsPlayerBanned(src --[[@as Source]])

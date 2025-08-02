@@ -4,26 +4,27 @@ local characterDataTables = require 'config.server'.characterDataTables
 local function createUsersTable()
     MySQL.query([[
         CREATE TABLE IF NOT EXISTS `users` (
-            `userid` int UNSIGNED NOT NULL AUTO_INCREMENT,
-            `username` varchar(255) DEFAULT NULL,
-            `license` varchar(50) DEFAULT NULL,
-            `license2` varchar(50) DEFAULT NULL,
-            `fivem` varchar(20) DEFAULT NULL,
-            `discord` varchar(30) DEFAULT NULL,
-            PRIMARY KEY (`userid`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        `userid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+        `username` varchar(255) NOT NULL,
+        `discord` varchar(30) NOT NULL,
+        `license` varchar(50) NOT NULL,
+        `license2` varchar(50) NOT NULL,
+        `fivem` varchar(20) DEFAULT NULL,
+        PRIMARY KEY (`userid`),
+        UNIQUE KEY `discord` (`discord`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ]])
 end
 
 ---@param identifiers table<PlayerIdentifier, string>
 ---@return number?
 local function createUser(identifiers)
-    return MySQL.insert.await('INSERT INTO users (username, license, license2, fivem, discord) VALUES (?, ?, ?, ?, ?)', {
-        identifiers.username,
-        identifiers.license,
-        identifiers.license2,
-        identifiers.fivem,
-        identifiers.discord,
+    return MySQL.insert.await('INSERT INTO users (username, discord, license, license2, fivem) VALUES (:username, :discord, :license, :license2, :fivem) ON DUPLICATE KEY UPDATE username = :username, license = :license, license2 = :license2, fivem = :fivem', {
+        username = identifiers.username,
+        discord = identifiers.discord,
+        license = identifiers.license,
+        license2 = identifiers.license2,
+        fivem = identifiers.fivem
     })
 end
 
@@ -98,6 +99,9 @@ end
 ---@return BanEntity?
 local function fetchBan(requests)
     local conditions = getRequestQueryConditions(requests)
+    if not conditions or conditions == "" then
+        return nil
+    end
     local result = MySQL.single.await('SELECT expire, reason FROM bans WHERE ' ..conditions)
     return result and {
         expire = result.expire,
@@ -113,8 +117,8 @@ end
 
 ---@param request UpsertPlayerRequest
 local function upsertPlayerEntity(request)
-    MySQL.insert.await('INSERT INTO players (userId, citizenid, cid, name, money, charinfo, job, gang, position, metadata, last_logged_out) VALUES (:userId, :citizenid, :cid, :name, :money, :charinfo, :job, :gang, :position, :metadata, :last_logged_out) ON DUPLICATE KEY UPDATE name = :name, money = :money, charinfo = :charinfo, job = :job, gang = :gang, position = :position, metadata = :metadata, last_logged_out = :last_logged_out', {
-        userId = request.playerEntity.userId,
+    MySQL.insert.await('INSERT INTO players (userid, citizenid, cid, name, money, charinfo, job, gang, position, metadata, last_logged_out) VALUES (:userid, :citizenid, :cid, :name, :money, :charinfo, :job, :gang, :position, :metadata, :last_logged_out) ON DUPLICATE KEY UPDATE name = :name, money = :money, charinfo = :charinfo, job = :job, gang = :gang, position = :position, metadata = :metadata, last_logged_out = :last_logged_out', {
+        userid = request.playerEntity.userid,
         citizenid = request.playerEntity.citizenid,
         cid = request.playerEntity.charinfo.cid,
         name = request.playerEntity.name,
@@ -166,10 +170,10 @@ end
 ---@return PlayerEntity?
 local function fetchPlayerEntity(citizenId)
     ---@type PlayerEntityDatabase
-    local player = MySQL.single.await('SELECT userId, citizenid, name, charinfo, money, job, gang, position, metadata, UNIX_TIMESTAMP(last_logged_out) AS lastLoggedOutUnix FROM players WHERE citizenid = ?', { citizenId })
+    local player = MySQL.single.await('SELECT userid, citizenid, name, charinfo, money, job, gang, position, metadata, UNIX_TIMESTAMP(last_logged_out) AS lastLoggedOutUnix FROM players WHERE citizenid = ?', { citizenId })
     local charinfo = player and json.decode(player.charinfo)
     return player and {
-        userId = player.userid,
+        userid = player.userid,
         citizenid = player.citizenid,
         name = player.name,
         money = json.decode(player.money),

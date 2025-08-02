@@ -61,7 +61,10 @@ functions.DrawText3D = function(x, y, z, text, color)
         coords = vec3(x, y, z),
         scale = 0.35,
         font = 4,
-        color = color or vec4(255, 255, 255, 215)
+        color = color or vec4(255, 255, 255, 215),
+        enableDropShadow = true,
+        enableOutline = true,
+        disableDrawRect = true,
     })
 end
 
@@ -230,6 +233,11 @@ end
 ---@deprecated use qbx.isWearingGloves from modules/lib.lua
 functions.IsWearingGloves = qbx.isWearingGloves
 
+functions.GetSkillLabel = qbx.getSkillLabel
+functions.GetLicenseLabel = qbx.getLicenseLabel
+functions.GetReputationLabel = qbx.getReputationLabel
+functions.GetDiseaseLabel = qbx.getDiseaseLabel
+
 ---@deprecated use lib.getClosestPlayer from ox_lib
 functions.GetClosestPlayer = function(coords) -- luacheck: ignore
     coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords or GetEntityCoords(cache.ped)
@@ -365,6 +373,10 @@ end
 
 ---@deprecated use lib.getVehicleProperties from ox_lib
 function functions.GetVehicleProperties(vehicle)
+    if GetResourceState('jg-mechanic') == 'started' then
+        return exports['jg-mechanic']:getVehicleProperties(vehicle)
+    end
+
     local props = lib.getVehicleProperties(vehicle)
     if not props then return end
 
@@ -413,6 +425,10 @@ local gameBuild = GetGameBuildNumber()
 
 ---@deprecated use lib.setVehicleProperties from ox_lib
 function functions.SetVehicleProperties(vehicle, props)
+    if GetResourceState('jg-mechanic') == 'started' then
+        return exports['jg-mechanic']:setVehicleProperties(vehicle, props)
+    end
+
     if props.tireHealth and not props.tyres then
         for wheelIndex, health in pairs(props.tireHealth) do
             SetVehicleWheelHealth(vehicle, wheelIndex, health)

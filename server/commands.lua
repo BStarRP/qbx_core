@@ -140,7 +140,7 @@ lib.addCommand('car', {
         { name = locale('command.car.params.model.name'), help = locale('command.car.params.model.help') },
         { name = locale('command.car.params.keepCurrentVehicle.name'), help = locale('command.car.params.keepCurrentVehicle.help'), optional = true },
     },
-    restricted = 'group.admin'
+    restricted = 'group.dev'
 }, function(source, args)
     if not args then return end
 
@@ -167,7 +167,7 @@ lib.addCommand('dv', {
     params = {
         { name = locale('command.dv.params.radius.name'), help = locale('command.dv.params.radius.help'), type = 'number', optional = true }
     },
-    restricted = 'group.admin'
+    restricted = 'group.dev'
 }, function(source, args)
     local ped = GetPlayerPed(source)
     local pedCars = {GetVehiclePedIsIn(ped, false)}

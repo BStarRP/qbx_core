@@ -583,11 +583,12 @@ function CheckPlayerData(source, playerData)
         Offline = false
     end
 
-    playerData.userid = playerData.userid or nil
+    playerData.userid = playerData.userid or (source and GetUserId(source) or playerData.userid)
     playerData.citizenid = playerData.citizenid or GenerateUniqueIdentifier('citizenid')
     playerData.cid = playerData.charinfo?.cid or playerData.cid or 1
     playerData.money = playerData.money or {}
     playerData.optin = playerData.optin or true
+    playerData.position = playerData.position or defaultSpawn
     for moneytype, startamount in pairs(config.money.moneyTypes) do
         playerData.money[moneytype] = playerData.money[moneytype] or startamount
     end
@@ -600,8 +601,6 @@ function CheckPlayerData(source, playerData)
     playerData.charinfo.gender = playerData.charinfo.gender or 0
     playerData.charinfo.backstory = playerData.charinfo.backstory or 'placeholder backstory'
     playerData.charinfo.nationality = playerData.charinfo.nationality or 'USA'
-    playerData.charinfo.phone = playerData.charinfo.phone or GenerateUniqueIdentifier('PhoneNumber')
-    playerData.charinfo.account = playerData.charinfo.account or GenerateUniqueIdentifier('AccountNumber')
     playerData.charinfo.cid = playerData.charinfo.cid or playerData.cid
     -- Metadata
     playerData.metadata = playerData.metadata or {}
@@ -636,13 +635,14 @@ function CheckPlayerData(source, playerData)
     --walkstyle
     playerData.metadata.walkstyle = playerData.metadata.walkstyle or "Hipster"
 
-    --afflictions
+    --diseases
     playerData.metadata.diseases = playerData.metadata.diseases or {}
     playerData.metadata.diseases.addiction = playerData.metadata.diseases.addiction or 0
     playerData.metadata.diseases.angelic = playerData.metadata.diseases.angelic or 0
     playerData.metadata.diseases.vampirism = playerData.metadata.diseases.vampirism or 0
     playerData.metadata.diseases.zombieism = playerData.metadata.diseases.zombieism or 0
     playerData.metadata.diseases.lycanthropy = playerData.metadata.diseases.lycanthropy or 0
+    playerData.metadata.diseases.morphism = playerData.metadata.diseases.morphism or 0
     --reputation
     playerData.metadata.reputation = playerData.metadata.reputation or {}
     playerData.metadata.reputation.civilian = playerData.metadata.reputation.civilian or 0
@@ -653,6 +653,7 @@ function CheckPlayerData(source, playerData)
     playerData.metadata.licenses = playerData.metadata.licenses or {}
     playerData.metadata.licenses.permit = playerData.metadata.licenses.permit or false
     playerData.metadata.licenses.driver = playerData.metadata.licenses.driver or false
+    playerData.metadata.licenses.bike = playerData.metadata.licenses.bike or false
     playerData.metadata.licenses.commercial = playerData.metadata.licenses.commercial or false
     playerData.metadata.licenses.drone = playerData.metadata.licenses.drone or false
     playerData.metadata.licenses.lawyer = playerData.metadata.licenses.lawyer or false
@@ -666,15 +667,7 @@ function CheckPlayerData(source, playerData)
     playerData.metadata.licenses.tuner = playerData.metadata.licenses.tuner or false
     playerData.metadata.licenses.stancer = playerData.metadata.licenses.stancer or false
     playerData.metadata.licenses.gym = playerData.metadata.licenses.gym or false
-
-    --inside
-    playerData.metadata.inside = playerData.metadata.inside or {
-        house = nil,
-        apartment = {
-            apartmentType = nil,
-            apartmentId = nil,
-        }
-    }
+    playerData.metadata.licenses.library = playerData.metadata.licenses.library or false
 
     local jobs, gangs = storage.fetchPlayerGroups(playerData.citizenid)
 
@@ -719,7 +712,6 @@ function CheckPlayerData(source, playerData)
         }
     }
     playerData.gangs = gangs or {}
-    playerData.position = playerData.position or defaultSpawn
     playerData.items = {}
     return CreatePlayer(playerData --[[@as PlayerData]], Offline)
 end
@@ -769,12 +761,6 @@ function CreatePlayer(playerData, Offline)
 
     ---@deprecated use UpdatePlayerData instead
     function self.Functions.UpdatePlayerData()
-        if self.Offline then
-            SaveOffline(self.PlayerData)
-            lib.print.warn('UpdatePlayerData is unsupported for offline players')
-            return
-        end
-
         UpdatePlayerData(self.PlayerData.source)
     end
 
@@ -917,7 +903,7 @@ function CreatePlayer(playerData, Offline)
     ---@return any table
     function self.Functions.GetItemByName(itemName)
         assert(not self.Offline, 'unsupported for offline players')
-        return exports.ox_inventory:GetSlotWithItem(self.PlayerData.source, item)
+        return exports.ox_inventory:GetSlotWithItem(self.PlayerData.source, itemName)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -925,7 +911,7 @@ function CreatePlayer(playerData, Offline)
     ---@return any table
     function self.Functions.GetItemsByName(itemName)
         assert(not self.Offline, 'unsupported for offline players')
-        return exports.ox_inventory:GetSlotsWithItem(self.PlayerData.source, item)
+        return exports.ox_inventory:GetSlotsWithItem(self.PlayerData.source, itemName)
     end
 
     ---@deprecated use ox_inventory exports directly
@@ -1075,7 +1061,7 @@ function CreatePlayer(playerData, Offline)
 
         local ped = GetPlayerPed(self.PlayerData.source)
         lib.callback.await('qbx_core:client:setHealth', self.PlayerData.source, self.PlayerData.metadata.health)
-        SetPedArmour(ped, self.PlayerData.metadata.armor)
+        --SetPedArmour(ped, self.PlayerData.metadata.armor)
         -- At this point we are safe to emit new instance to third party resource for load handling
         GlobalState.PlayerCount += 1
         UpdatePlayerData(self.PlayerData.source)
@@ -1097,6 +1083,7 @@ function Save(source)
     local playerData = QBX.Players[source].PlayerData
     local playerState = Player(source)?.state
     local pcoords = playerData.position
+
     if not playerState.inApartment and not playerState.inProperty then
         local coords = GetEntityCoords(ped)
         pcoords = vec4(coords.x, coords.y, coords.z, GetEntityHeading(ped))
@@ -1167,7 +1154,8 @@ exports('SetPlayerData', SetPlayerData)
 function UpdatePlayerData(identifier)
     local player = type(identifier) == 'string' and (GetPlayerByCitizenId(identifier) or GetOfflinePlayer(identifier)) or GetPlayer(identifier)
 
-    if not player or player.Offline then return end
+    if not player then return end
+    if player.Offline then return end
 
     TriggerEvent('QBCore:Player:SetPlayerData', player.PlayerData)
     TriggerClientEvent('QBCore:Player:SetPlayerData', player.PlayerData.source, player.PlayerData)
@@ -1326,13 +1314,8 @@ function AddMoney(identifier, moneyType, amount, reason)
     }) then return false end
 
     player.PlayerData.money[moneyType] += amount
-
+    UpdatePlayerData(identifier)
     if not player.Offline then
-        UpdatePlayerData(identifier)
-
-        local tags = amount > 100000 and config.logging.role or nil
-        local resource = GetInvokingResource() or cache.resource
-
         player.Functions.Log({
             event = 'Added Money',
             message = ('**%s money added, new %s balance: $%s reason: %s'):format(player.PlayerData.name, moneyType, amount, reason),
@@ -1388,13 +1371,8 @@ function RemoveMoney(identifier, moneyType, amount, reason)
     end
 
     player.PlayerData.money[moneyType] -= amount
-
+    UpdatePlayerData(identifier)
     if not player.Offline then
-        UpdatePlayerData(identifier)
-
-        local tags = amount > 100000 and config.logging.role or nil
-        local resource = GetInvokingResource() or cache.resource
-
         player.Functions.Log({
             event = 'Removed Money',
             message = ('**%s money removed, new %s balance: $%s reason: %s'):format(player.PlayerData.name, moneyType, amount, reason),
@@ -1429,7 +1407,6 @@ function SetMoney(identifier, moneyType, amount, reason)
 
     reason = reason or 'unknown'
     amount = qbx.math.round(tonumber(amount) --[[@as number]])
-    local oldAmount = player.PlayerData.money[moneyType]
 
     if amount < 0 or not player.PlayerData.money[moneyType] then return false end
     local prevAmount = player.PlayerData.money[moneyType] or 0
@@ -1443,24 +1420,15 @@ function SetMoney(identifier, moneyType, amount, reason)
     }) then return false end
 
     player.PlayerData.money[moneyType] = amount
-
+    UpdatePlayerData(identifier)
     if not player.Offline then
-        UpdatePlayerData(identifier)
-
-        local difference = amount - oldAmount
-        local dirChange = difference < 0 and 'removed' or 'added'
-        local absDifference = math.abs(difference)
-        local tags = absDifference > 50000 and config.logging.role or {}
-        local resource = GetInvokingResource() or cache.resource
-
         player.Functions.Log({
             event = 'Set Money',
             message = ('**%s money was set, new %s balance: $%s reason: %s'):format(player.PlayerData.name, moneyType, amount, reason),
             data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneytype, cid = player.PlayerData.citizenid, status = 'online'},
             resource = GetInvokingResource()
         })
-
-        emitMoneyEvents(player.PlayerData.source, player.PlayerData.money, moneyType, absDifference, 'set', difference < 0, reason)
+        emitMoneyEvents(player.PlayerData.source, player.PlayerData.money, moneyType, math.abs(amountDiff), 'set', amountDiff < 0, reason)
     else
         Log({
             event = 'Player Set Money',
@@ -1492,24 +1460,24 @@ exports('GetMoney', GetMoney)
 
 ---@param source Source
 ---@param citizenid string
----@return boolean success
 function DeleteCharacter(source, citizenid)
     local discord = GetPlayerIdentifierByType(source --[[@as string]], 'discord')
     local result = storage.fetchPlayerEntity(citizenid)
     local player = GetPlayerByCitizenId(citizenid)
 
     if not player and result and discord == result.discord then
-        success = storage.deletePlayer(citizenid)
-        local charname = result.charinfo.firstname .. ' ' .. result.charinfo.lastname
-        local success = storage.deletePlayer(citizenid)
-        if success then
-            Log({
-                event = 'Character Deleted',
-                message = string.format('%s has deleted a character: %s', GetPlayerName(source), charname),
-                data = {},
-                source = source,
-            })
-        end
+        CreateThread(function()
+            local charname = result.charinfo.firstname .. ' ' .. result.charinfo.lastname
+            local success = storage.deletePlayer(citizenid)
+            if success then
+                Log({
+                    event = 'Character Deleted',
+                    message = string.format('%s has deleted a character: %s', GetPlayerName(source), charname),
+                    data = {},
+                    source = source,
+                })
+            end
+        end)
     else
         ScriptAlert({
             alert = 'Delete Failed',
@@ -1518,8 +1486,6 @@ function DeleteCharacter(source, citizenid)
             ban = true,
         })
     end
-
-    return success
 end
 
 lib.callback.register('qbx_core:server:deleteCharacter', DeleteCharacter)
