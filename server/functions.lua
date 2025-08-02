@@ -459,8 +459,12 @@ function BanPlayer(playerSrc, reason, by)
     local name = GetPlayerName(playerId)
     local success, errorResult = storage.insertBan({
         name = name,
-        license = GetPlayerIdentifierByType(playerId --[[@as string]], 'license2') or GetPlayerIdentifierByType(playerId --[[@as string]], 'license'),
+        license = GetPlayerIdentifierByType(playerId --[[@as string]], 'license'),
+        license2 = GetPlayerIdentifierByType(playerId --[[@as string]], 'license2'),
         discord = GetPlayerIdentifierByType(playerId --[[@as string]], 'discord'),
+        xbl = GetPlayerIdentifierByType(playerId --[[@as string]], 'xbl'),
+        live = GetPlayerIdentifierByType(playerId --[[@as string]], 'live'),
+        fivem = GetPlayerIdentifierByType(playerId --[[@as string]], 'fivem'),
         ip = GetPlayerIdentifierByType(playerId --[[@as string]], 'ip'),
         tokens = json.encode(GetPlayerTokens(playerId)),
         reason = reason,
