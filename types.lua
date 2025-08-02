@@ -108,11 +108,16 @@
 ---@class InsertBanRequest
 ---@field name string
 ---@field license? string
----@field discordId? string
+---@field license2? string
+---@field discord? string
+---@field xbl? string
+---@field live? string
+---@field fivem? string
 ---@field ip? string
+---@field tokens? string
 ---@field reason string
 ---@field bannedBy string
----@field expiration integer epoch second that the ban will expire
+---@field expiration integer -- epoch second that the ban will expire
 
 ---@class GetBanRequest
 ---@field license? string
