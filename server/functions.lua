@@ -465,6 +465,7 @@ function BanPlayer(playerSrc, reason, by)
         xbl = GetPlayerIdentifierByType(playerId --[[@as string]], 'xbl'),
         live = GetPlayerIdentifierByType(playerId --[[@as string]], 'live'),
         fivem = GetPlayerIdentifierByType(playerId --[[@as string]], 'fivem'),
+        steam = GetPlayerIdentifierByType(playerId --[[@as string]], 'steam'),
         ip = GetPlayerIdentifierByType(playerId --[[@as string]], 'ip'),
         tokens = json.encode(GetPlayerTokens(playerId)),
         reason = reason,

@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `bans` (
   `xbl` varchar(50) DEFAULT NULL,
   `live` varchar(50) DEFAULT NULL,
   `fivem` varchar(50) DEFAULT NULL,
+  `steam` varchar(50) DEFAULT NULL,
   `ip` varchar(50) DEFAULT NULL,
   `tokens` text DEFAULT NULL,
   `reason` text DEFAULT NULL,

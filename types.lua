@@ -113,6 +113,7 @@
 ---@field xbl? string
 ---@field live? string
 ---@field fivem? string
+---@field steam? string
 ---@field ip? string
 ---@field tokens? string
 ---@field reason string

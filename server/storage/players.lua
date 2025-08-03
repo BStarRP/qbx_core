@@ -48,7 +48,7 @@ local function insertBan(request)
         }
     end
 
-    MySQL.insert.await('INSERT INTO bans (name, license, license2, discord, xbl, live, fivem, ip, tokens, reason, expire, bannedby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', {
+    MySQL.insert.await('INSERT INTO bans (name, license, license2, discord, xbl, live, fivem, steam, ip, tokens, reason, expire, bannedby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', {
         request.name,
         request.license,
         request.license2,
@@ -56,6 +56,7 @@ local function insertBan(request)
         request.xbl,
         request.live,
         request.fivem,
+        request.steam,
         request.ip,
         request.tokens,
         request.reason,
