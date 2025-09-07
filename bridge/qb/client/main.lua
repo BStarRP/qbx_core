@@ -15,10 +15,10 @@ qbCoreCompat.Functions = require 'bridge.qb.client.functions'
 
 ---@diagnostic disable: deprecated
 
----@deprecated use https://overextended.github.io/docs/ox_lib/Callback/Lua/Client/ instead
+---@deprecated use https://coxdocs.dev/ox_lib/Modules/Callback/Lua/Client instead
 qbCoreCompat.ClientCallbacks = {}
 
----@deprecated use https://overextended.github.io/docs/ox_lib/Callback/Lua/Client/ instead
+---@deprecated use https://coxdocs.dev/ox_lib/Modules/Callback/Lua/Client instead
 qbCoreCompat.ServerCallbacks = {}
 
 -- Callback Events --
@@ -32,7 +32,7 @@ RegisterNetEvent('QBCore:Client:TriggerClientCallback', function(name, ...)
 end)
 
 -- Server Callback
----@deprecated use https://overextended.github.io/docs/ox_lib/Callback/Lua/Client/ instead
+---@deprecated use https://coxdocs.dev/ox_lib/Modules/Callback/Lua/Client instead
 RegisterNetEvent('QBCore:Client:TriggerCallback', function(name, ...)
     if qbCoreCompat.ServerCallbacks[name] then
         qbCoreCompat.ServerCallbacks[name](...)
@@ -43,7 +43,7 @@ end)
 -- Callback Functions --
 
 -- Client Callback
----@deprecated use https://overextended.github.io/docs/ox_lib/Callback/Lua/Client/ instead
+---@deprecated use https://coxdocs.dev/ox_lib/Modules/Callback/Lua/Client instead
 function qbCoreCompat.Functions.CreateClientCallback(name, cb)
     qbCoreCompat.ClientCallbacks[name] = cb
 end
@@ -55,7 +55,7 @@ function qbCoreCompat.Functions.TriggerClientCallback(name, cb, ...)
 end
 
 -- Server Callback
----@deprecated use https://overextended.github.io/docs/ox_lib/Callback/Lua/Client/ instead
+---@deprecated use https://coxdocs.dev/ox_lib/Modules/Callback/Lua/Client instead
 function qbCoreCompat.Functions.TriggerCallback(name, cb, ...)
     qbCoreCompat.ServerCallbacks[name] = cb
     TriggerServerEvent('QBCore:Server:TriggerCallback', name, ...)

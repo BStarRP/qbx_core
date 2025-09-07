@@ -17,7 +17,7 @@ functions.GetCoords = function(entity) -- luacheck: ignore
     return vec4(coords.x, coords.y, coords.z, GetEntityHeading(entity))
 end
 
----@deprecated use https://overextended.dev/ox_inventory/Functions/Client#search
+---@deprecated use https://coxdocs.dev/ox_inventory/Functions/Client#search
 functions.HasItem = function(items, amount)
 	if not items then return false end
 	amount = amount ~= nil and amount or 1
