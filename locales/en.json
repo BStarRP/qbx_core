@@ -23,7 +23,7 @@
         "already_in_queue": "You are already in queue.",
         "no_subqueue": "You were not let in any sub-queue.",
         "character_delete_failed": "Character deletion failed. Please try again.",
-        "not_optin": "You are not opted in."
+        "not_optin": "You are not opted in for admin duty. (/optin to toggle)"
     },
     "success": {
         "server_opened": "The server has been opened",
@@ -31,7 +31,7 @@
         "teleported_waypoint": "Teleported To Waypoint.",
         "character_deleted": "Character deleted!",
         "character_deleted_citizenid": "You successfully deleted the character with Citizen ID %s.",
-        "optin_set": "You have successfully opted %s."
+        "optin_set": "You have successfully opted %s for admin duty."
     },
     "info": {
         "received_paycheck": "You received your paycheck of $%s",
@@ -64,7 +64,9 @@
         "birth_date": "Birth Date",
         "select_gender": "Select your gender...",
         "confirm_delete": "Are you sure you wish to delete this character?",
-        "in_queue": "🐌 You are %s/%s in queue. (%s) %s"
+        "in_queue": "🐌 You are %s/%s in queue. (%s) %s",
+        "fetching_user": "Fetching user...",
+        "creating_user": "Creating user..."
     },
     "command": {
         "tp": {
@@ -191,6 +193,6 @@
                 "message": { "name": "message", "help": "What you sign" }
             }
         },
-        "optin": { "help": "Toggle opt-in (Admin Only)" }
+        "optin": { "help": "Toggle opt-in for admin duty (Admin Only)" }
     }
 }
