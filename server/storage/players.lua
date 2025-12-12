@@ -67,46 +67,39 @@ local function insertBan(request)
 end
 
 ---@param request GetBanRequest
----@return string column in storage
----@return string value of the id
+---@return string? column in storage
+---@return string? value of the id
 local function getBanId(request)
     if request.license then
         return 'license', request.license
+    elseif request.license2 then
+        return 'license2', request.license2
     elseif request.discord then
         return 'discord', request.discord
+    elseif request.xbl then
+        return 'xbl', request.xbl
+    elseif request.live then
+        return 'live', request.live
+    elseif request.fivem then
+        return 'fivem', request.fivem
+    elseif request.steam then
+        return 'steam', request.steam
     elseif request.ip then
         return 'ip', request.ip
     else
-        error('no identifier provided', 2)
+        return nil, nil
     end
 end
 
----@param requests GetBanRequests
----@return string query in storage
-local function getRequestQueryConditions(requests)
-    local conditions = {}
-
-    for key, value in pairs(requests) do
-        if value ~= nil and value ~= "" then  -- Check for nil or empty value
-            local escapedValue = value:gsub("'", "''")
-            table.insert(conditions, string.format("%s = '%s'", key, escapedValue))
-        end
-    end
-
-    return table.concat(conditions, " OR ")
-end
-
----@param requests GetBanRequest
+---@param request GetBanRequest
 ---@return BanEntity?
-local function fetchBan(requests)
-    local conditions = getRequestQueryConditions(requests)
-    if not conditions or conditions == "" then
-        return nil
-    end
-    local result = MySQL.single.await('SELECT expire, reason FROM bans WHERE ' ..conditions)
+local function fetchBan(request)
+    local column, value = getBanId(request)
+    local result = MySQL.single.await('SELECT expire, reason, tokens FROM bans WHERE ' .. column .. ' = ?', { value })
     return result and {
         expire = result.expire,
         reason = result.reason,
+        tokens = result.tokens and json.decode(result.tokens) or nil,
     } or nil
 end
 

@@ -104,6 +104,7 @@ qbx.electricVehicles = {
     ['buffalo5'] = true,
     ['vivanite'] = true,
     ['pbbejv'] = true,
+    ['nkomnisegt'] = true,
 }
 
 qbx.armsWithoutGloves = lib.table.freeze({
@@ -768,7 +769,7 @@ else
         local model = GetEntityModel(vehicle)
         if not model then return false end
         local vehicleName = GetDisplayNameFromVehicleModel(model):lower()
-        return qbx.electricVehicles[vehicleName] == true
+        return qbx.electricVehicles[vehicleName] == true or (GetIsVehicleElectric(model) and IsThisModelAHeli(model) == false)
     end
 
     ---Returns if the local ped is wearing gloves.

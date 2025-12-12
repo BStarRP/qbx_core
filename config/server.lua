@@ -2,12 +2,11 @@ return {
     updateInterval = 5, -- how often to update player data in minutes
 
     money = {
-        ---@alias MoneyType 'cash' | 'bank' | 'change' | 'markedcash'
-        ---@alias Money {cash: number, bank: number, change: number, markedcash: number}
+        ---@alias MoneyType 'cash' | 'bank' | 'change' | 'markedcash'| 'coins' | 'starspins'
+        ---@alias Money {cash: number, bank: number, change: number, markedcash: number, coins: number, markedcash: number}
         ---@type Money
-        moneyTypes = { cash = 500, change = 0, markedcash = 0,  bank = 5000}, -- type = startamount - Add or remove money types for your server (for ex. blackmoney = 0), remember once added it will not be removed from the database!
-        dontAllowMinus = { 'cash', 'change', 'markedcash'}, -- Money that is not allowed going in minus
-        paycheckTimeout = 10, -- The time in minutes that it will give the paycheck
+        moneyTypes = { cash = 500, change = 0, markedcash = 0, bank = 5000, coins = 0, starspins = 0}, -- add/remove types as needed
+        dontAllowMinus = { 'cash', 'change', 'markedcash', 'coins', 'starspins' },
         paycheckSociety = false -- If true paycheck will come from the society account that the player is employed at
     },
 

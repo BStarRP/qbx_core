@@ -93,7 +93,7 @@ local function onPlayerConnecting(name, _, deferrals)
         end
     end
 
-    if not identifiers.discord then
+    if identifiers.discord == nil or identifiers.discord == '' then
         deferrals.done(locale('error.no_valid_discord'))
     elseif serverConfig.checkDuplicateDiscord and usedDiscords[identifiers.discord] then
         deferrals.done(locale('error.duplicate_discord'))
@@ -116,7 +116,7 @@ local function onPlayerConnecting(name, _, deferrals)
             local isBanned, Reason = IsPlayerBanned(src --[[@as Source]])
             if isBanned then
                 Wait(0) -- Mandatory wait
-                deferrals.done(Reason)
+                deferrals.done(('You have been banned from the server! \n Reason: %s \n\n - open a ban appeal ticket in B⭐RP Discord!'):format(Reason))
             end
         end)
 

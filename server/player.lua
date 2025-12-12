@@ -635,6 +635,11 @@ function CheckPlayerData(source, playerData)
     --walkstyle
     playerData.metadata.walkstyle = playerData.metadata.walkstyle or "Hipster"
 
+    --auras
+    playerData.metadata.auras = playerData.metadata.auras or {}
+    playerData.metadata.auras.doublexp = playerData.metadata.auras.doublexp or false
+    playerData.metadata.auras.doublerep = playerData.metadata.auras.doublerep or false
+
     --diseases
     playerData.metadata.diseases = playerData.metadata.diseases or {}
     playerData.metadata.diseases.addiction = playerData.metadata.diseases.addiction or 0
@@ -643,6 +648,9 @@ function CheckPlayerData(source, playerData)
     playerData.metadata.diseases.zombieism = playerData.metadata.diseases.zombieism or 0
     playerData.metadata.diseases.lycanthropy = playerData.metadata.diseases.lycanthropy or 0
     playerData.metadata.diseases.morphism = playerData.metadata.diseases.morphism or 0
+    playerData.metadata.diseases.aquatic = playerData.metadata.diseases.aquatic or 0
+    playerData.metadata.diseases.demonic = playerData.metadata.diseases.demonic or 0
+    playerData.metadata.diseases.riftopathy = playerData.metadata.diseases.riftopathy or 0
     --reputation
     playerData.metadata.reputation = playerData.metadata.reputation or {}
     playerData.metadata.reputation.civilian = playerData.metadata.reputation.civilian or 0

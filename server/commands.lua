@@ -372,13 +372,24 @@ lib.addCommand('ooc', {
 }, function(source, args)
     args[1] = args[locale('command.ooc.params.message.name')]
     args[locale('command.ooc.params.message.name')] = nil
+
     if #args < 1 then Notify(source, locale('error.missing_args2'), 'error') return end
     local msg = table.concat(args, ' '):gsub('[~<].-[>~]', '')
     local playerState = Player(source).state
     playerState:set('ooc', msg, true)
 
     -- We have to reset the playerState since the state does not get replicated on StateBagHandler if the value is the same as the previous one --
-    playerState:set('ooc', nil, true)
+    --Logging
+    exports.qbx_core:Log({
+        event = 'Player Command',
+        message = ('/ooc ' .. msg),
+        data = {
+            command = 'ooc',
+            text = msg,
+        },
+        source = source,
+        resource = GetInvokingResource(),
+    })
 end)
 
 lib.addCommand('me', {
@@ -396,6 +407,18 @@ lib.addCommand('me', {
 
     -- We have to reset the playerState since the state does not get replicated on StateBagHandler if the value is the same as the previous one --
     playerState:set('me', nil, true)
+
+    --Logging
+    exports.qbx_core:Log({
+        event = 'Player Command',
+        message = ('/me ' .. msg),
+        data = {
+            command = 'me',
+            text = msg,
+        },
+        source = source,
+        resource = GetInvokingResource(),
+    })
 end)
 
 lib.addCommand('do', {
@@ -413,6 +436,18 @@ lib.addCommand('do', {
 
     -- We have to reset the playerState since the state does not get replicated on StateBagHandler if the value is the same as the previous one --
     playerState:set('do', nil, true)
+
+    --Logging
+    exports.qbx_core:Log({
+        event = 'Player Command',
+        message = ('/do ' .. msg),
+        data = {
+            command = 'do',
+            text = msg,
+        },
+        source = source,
+        resource = GetInvokingResource(),
+    })
 end)
 
 lib.addCommand('sign', {
@@ -430,6 +465,18 @@ lib.addCommand('sign', {
 
     -- We have to reset the playerState since the state does not get replicated on StateBagHandler if the value is the same as the previous one --
     playerState:set('sign', nil, true)
+
+    --Logging
+    exports.qbx_core:Log({
+        event = 'Player Command',
+        message = ('/sign ' .. msg),
+        data = {
+            command = 'sign',
+            text = msg,
+        },
+        source = source,
+        resource = GetInvokingResource(),
+    })
 end)
 
 lib.addCommand('id', {help = locale('info.check_id')}, function(source)
@@ -460,7 +507,7 @@ end)
 
 lib.addCommand('optin', {
     help = locale('command.optin.help'),
-    restricted = 'group.admin'
+    restricted = 'group.dev'
 }, function(source, args)
     ToggleOptin(source)
     Notify(source, locale('success.optin_set', IsOptin(source) and 'in' or 'out'))

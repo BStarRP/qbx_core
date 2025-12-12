@@ -101,7 +101,7 @@ return {
         label = 'L.S. Police Department',
         type = 'leo',
         societyPay = true,
-        basePay = 900,
+        basePay = 1000,
         licensed = true,
         grades = {
             [0] = {
@@ -148,7 +148,7 @@ return {
         label = 'B.C. Sheriff\'s Office',
         type = 'leo',
         societyPay = true,
-        basePay = 900,
+        basePay = 1000,
         licensed = true,
         grades = {
             [0] = {
@@ -195,7 +195,7 @@ return {
         label = 'S.A. State Troopers',
         type = 'leo',
         societyPay = true,
-        basePay = 900,
+        basePay = 1100,
         licensed = true,
         grades = {
             [0] = {
@@ -242,7 +242,7 @@ return {
         label = 'Bolingbroke State Prison',
         type = 'leo',
         societyPay = true,
-        basePay = 900,
+        basePay = 1000,
         licensed = true,
         grades = {
             [0] = {
@@ -252,32 +252,31 @@ return {
                 name = 'Officer',
             },
             [2] = {
-                name = 'Corporal',
+                name = 'Senior Officer',
             },
             [3] = {
-                name = 'Sergeant',
+                name = 'Corporal',
             },
             [4] = {
-                name = 'Lieutenant',
+                name = 'Sergeant',
             },
             [5] = {
+                name = 'Lieutenant',
+            },
+            [6] = {
                 name = 'Captain',
                 ismanager = true,
             },
-            [6] = {
-                name = 'Sheriff Command',
-                ismanager = true,
-            },
             [7] = {
-                name = 'Deputy Warden',
+                name = 'Commander',
                 ismanager = true,
             },
             [8] = {
-                name = 'Warden',
-                isboss = true,
+                name = 'Deputy Warden',
+                ismanager = true,
             },
             [9] = {
-                name = 'Sheriff High Command',
+                name = 'Warden',
                 isboss = true,
             },
         },
@@ -309,7 +308,7 @@ return {
         label = 'FIB',
         type = 'federal',
         societyPay = true,
-        basePay = 1250,
+        basePay = 1500,
         licensed = true,
         grades = {
             [0] = {
@@ -433,7 +432,7 @@ return {
         label = 'U.S. Coast Guard',
         type = 'federal',
         societyPay = true,
-        basePay = 950,
+        basePay = 1200,
         licensed = true,
         grades = {
             [0] = {
@@ -522,7 +521,7 @@ return {
         label = 'L.S. Medical Services',
         type = 'ems',
         societyPay = true,
-        basePay = 950,
+        basePay = 1000,
         licensed = true,
         grades = {
             [0] = {
@@ -730,7 +729,7 @@ return {
         },
     },
     ['fire'] = {
-		label = 'L.S. Fire Department',
+		label = 'S.A. Fire & Rescue',
         type = 'ems',
         societyPay = true,
         basePay = 950,
@@ -776,7 +775,7 @@ return {
         },
     },
     ['dispatch'] = {
-        label = 'L.S. Dispatch',
+        label = 'Emergency Dispatch',
         type = 'leo',
         societyPay = true,
         basePay = 950,
@@ -802,25 +801,27 @@ return {
 		label = 'S.A. Department of Justice',
         type = 'doj',
         societyPay = true,
-        basePay = 1350,
+        basePay = 1450,
         licensed = true,
 		grades = {
             [0] = {
                 name = 'Court Clerk',
             },
             [1] = {
-                name = 'Circuit Judge',
+                name = 'Magistrate',
             },
             [2] = {
                 name = 'District Judge',
-                ismanager = true,
             },
             [3] = {
-                name = 'Supreme Judge',
-				ismanager = true,
+                name = 'Circuit Judge',
             },
             [4] = {
-                name = 'Chief Judge',
+                name = 'Associate Justice',
+				ismanager = true,
+            },
+            [5] = {
+                name = 'Chief Justice',
                 isboss = true,
             },
         },
@@ -829,7 +830,7 @@ return {
 		label = 'S.A. District Attorney\'s Office',
         type = 'doj',
         societyPay = true,
-        basePay = 1150,
+        basePay = 1200,
         licensed = true,
 		grades = {
             [0] = {
@@ -862,7 +863,7 @@ return {
 		label = 'S.A. Public Defender\'s Office',
         type = 'doj',
         societyPay = true,
-        basePay = 1000,
+        basePay = 1050,
         licensed = true,
 		grades = {
             [0] = {
@@ -892,31 +893,31 @@ return {
         },
 	},
     ['lawfirm'] = {
-		label = 'Ghost Law & Partners',
+        label = 'Freedom Law',
         type = 'lawfirm',
         societyPay = true,
-        basePay = 900,
-		grades = {
+        basePay = 1000,
+        grades = {
             [0] = {
-                name = 'Front Desk',
+                name = 'Legal Intern / Cadet',
             },
             [1] = {
-                name = 'Law Clerk',
+                name = 'Legal Assistant / Desk Officer',
             },
             [2] = {
-                name = 'Investigator',
+                name = 'Paralegal / Security Officer',
             },
             [3] = {
-                name = 'Paralegal',
+                name = 'Junior Attorney / Senior Officer',
             },
             [4] = {
-                name = 'Intern',
+                name = 'Attorney / Field Supervisor',
             },
             [5] = {
-                name = 'Attorney',
+                name = 'Senior Attorney / Security Command',
             },
             [6] = {
-                name = 'Senior Attorney',
+                name = 'Managing Partner / Chief of Security',
                 ismanager = true,
             },
             [7] = {
@@ -924,12 +925,12 @@ return {
                 isboss = true,
             },
         },
-	},
+    },
     ['lawfirm2'] = {
 		label = 'Cornerstone Law',
         type = 'lawfirm',
         societyPay = true,
-        basePay = 900,
+        basePay = 1000,
 		grades = {
             [0] = {
                 name = 'Security',
@@ -963,7 +964,7 @@ return {
 		label = 'Weazel News',
         type = 'news',
         societyPay = true,
-        basePay = 800,
+        basePay = 900,
 		grades = {
             [0] = {
                 name = 'Intern',
@@ -1000,7 +1001,7 @@ return {
 		label = 'Real Estate',
         type = 'realestate',
         societyPay = true,
-        basePay = 850,
+        basePay = 950,
 		grades = {
             [0] = {
                 name = 'Security',
@@ -1072,7 +1073,32 @@ return {
         },
 	},
     ['cardealer'] = {
-		label = 'PDM',
+		label = 'Premium Dawson Motors',
+        type = 'autodealer',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+            [0] = {
+                name = 'Intern',
+            },
+            [1] = {
+                name = 'Salesrep',
+            },
+            [2] = {
+                name = 'Sr. Salesrep',
+            },
+			[3] = {
+                ismanager = true,
+                name = 'Manager',
+            },
+			[4] = {
+                name = 'Owner',
+                isboss = true,
+            },
+        },
+	},
+    ['commercialdealer'] = {
+		label = 'Pounder Utilitaire',
         type = 'autodealer',
         societyPay = true,
         basePay = 500,
@@ -1097,24 +1123,27 @@ return {
         },
 	},
     ['prestige'] = {
-		label = 'Prestige Motors',
+		label = 'Piazzas Prestige Motors',
         type = 'autodealer',
         societyPay = true,
         basePay = 500,
 		grades = {
             [0] = {
-                name = 'Recruit',
+                name = 'Intern',
             },
             [1] = {
-                name = 'Employee',
+                name = 'Sales Professional',
             },
-			[2] = {
+            [2] = {
+                name = 'Sr. Sales Professional',
+            },
+			[3] = {
+                ismanager = true,
                 name = 'Manager',
-				ismanager = true,
             },
-            [3] = {
+			[4] = {
                 name = 'Owner',
-				isboss = true,
+                isboss = true,
             },
         },
 	},
@@ -1336,6 +1365,34 @@ return {
             },
         },
 	},
+    ['mirrorparkauto'] = {
+		label = 'Mirror Park Auto',
+        type = 'mechanic',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+            [0] = {
+                name = 'Recruit',
+            },
+			[1] = {
+                name = 'Novice',
+            },
+			[2] = {
+                name = 'Experienced',
+            },
+			[3] = {
+                name = 'Advanced',
+            },
+			[4] = {
+                name = 'Manager',
+				ismanager = true,
+            },
+            [5] = {
+                name = 'boss',
+				isboss = true,
+            },
+        },
+	},
     ['underground'] = {
 		label = 'The Underground',
 		type = 'illegal',
@@ -1387,27 +1444,35 @@ return {
         },
 	},
 	['trucker'] = {
-		label = 'Doshi Distrubtion LLC',
+		label = 'Hope Distribution & Trucking LLC',
         type = 'trucking',
         societyPay = true,
-        basePay = 700,
+        basePay = 630,
         licensed = true,
 		grades = {
             [0] = {
-                name = 'Packer',
+                name = 'New Hire',
             },
 			[1] = {
-                name = 'Driver',
+                name = 'Local Trucker',
             },
 			[2] = {
-                name = 'Trucker',
+                name = 'Regional Trucker',
             },
 			[3] = {
-                name = 'Long Haul Trucker',
+                name = 'General Manager',
                 ismanager = true,
             },
 			[4] = {
-                name = 'Truck Boss',
+                name = 'Chief Financial Officer',
+				ismanager = true,
+            },
+			[5] = {
+                name = 'Chief Operations Officer',
+				ismanager = true,
+            },
+			[6] = {
+                name = 'Chief Executive Officer',
 				isboss = true,
             },
 
@@ -1776,6 +1841,31 @@ return {
 			},
 		},
 	},
+    ['fusionfeast'] = {
+		label = 'Fusion Feast',
+        type = 'bar',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+			[0] = {
+				name = 'Trainee',
+			},
+			[1] = {
+				name = 'Cook',
+			},
+            [2] = {
+				name = 'Bartender',
+			},
+            [3] = {
+				name = 'Manager',
+				ismanager = true,
+			},
+            [4] = {
+				name = 'Owner',
+				isboss = true,
+			},
+		},
+	},
     ['club77'] = {
 		label = 'Club77 Nightclub',
         type = 'bar',
@@ -1963,6 +2053,50 @@ return {
             },
         },
 	},
+    ['clothingstore2'] = {
+		label = 'Bag It Up',
+        type = 'clothing',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+            [0] = {
+                name = 'Tailor',
+            },
+            [1] = {
+                name = 'Crafter',
+            },
+            [2] = {
+                name = 'Manager',
+                ismanager = true,
+            },
+            [3] = {
+                name = 'Owner',
+                isboss = true,
+            },
+        },
+	},
+    ['skateshop'] = {
+		label = 'BlackLine',
+        type = 'broker',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+            [0] = {
+                name = 'Rookie',
+            },
+            [1] = {
+                name = 'Sales Rep.',
+            },
+            [2] = {
+                name = 'Manager',
+                ismanager = true,
+            },
+            [3] = {
+                name = 'Owner',
+                isboss = true,
+            },
+        },
+	},
 	['coltsshots'] = {
 		label = 'Colts Shots',
         type = 'bar',
@@ -2056,14 +2190,67 @@ return {
             [0] = {
                 name = 'Dancer',
             },
-			[1] = {
+            [1] = {
+                name = 'Security',
+            },
+			[2] = {
                 name = 'Bartender',
 			},
-			[2] = {
+			[3] = {
                 name = 'Manager',
 				ismanager = true,
 			},
+			[4] = {
+                name = 'Boss',
+				isboss = true,
+            },
+        },
+	},
+    ['bahamamamas'] = {
+		label = 'Bahama Mamas',
+        type = 'bar',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+            [0] = {
+                name = 'Dancer',
+            },
+            [1] = {
+                name = 'Security',
+            },
+			[2] = {
+                name = 'Bartender',
+			},
 			[3] = {
+                name = 'Manager',
+				ismanager = true,
+			},
+			[4] = {
+                name = 'Boss',
+				isboss = true,
+            },
+        },
+	},
+    ['mayfair'] = {
+		label = 'MayFair Night Club',
+        type = 'bar',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+            [0] = {
+                name = 'Dancer',
+            },
+            [1] = {
+                name = 'Security',
+            },
+			[2] = {
+                name = 'Bartender',
+			},
+			[3] = {
+                name = 'Manager',
+				ismanager = true,
+			},
+			[4] = {
                 name = 'Boss',
 				isboss = true,
             },
@@ -2232,8 +2419,58 @@ return {
             },
         },
 	},
+    ['ammuroxwood'] = {
+        label = 'Ammu-Nation Roxwood',
+		type = 'ammo',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+            [0] = {
+                name = 'Employee',
+            },
+            [1] = {
+                name = 'Assistant Supervisors',
+            },
+			[2] = {
+                name = 'Supervisors',
+			},
+			[3] = {
+                name = 'Lead Supervisor',
+				ismanager = true,
+			},
+			[4] = {
+                name = 'Owner',
+				isboss = true,
+            },
+        },
+	},
     ['digitalden'] = {
         label = 'Digital Den',
+		type = 'electronic',
+        societyPay = true,
+        basePay = 500,
+		grades = {
+            [0] = {
+                name = 'Employee',
+            },
+            [1] = {
+                name = 'Assistant Supervisors',
+            },
+			[2] = {
+                name = 'Supervisors',
+			},
+			[3] = {
+                name = 'Lead Supervisor',
+				ismanager = true,
+			},
+			[4] = {
+                name = 'Owner',
+				isboss = true,
+            },
+        },
+	},
+    ['digitaldenrox'] = {
+        label = 'Digital Den Roxwood',
 		type = 'electronic',
         societyPay = true,
         basePay = 500,
@@ -2305,7 +2542,7 @@ return {
         },
 	},
     ['ammupaleto'] = {
-		label = 'Ammu-Nation Paleto',
+		label = 'Pistol Korp',
 		type = 'ammo',
         societyPay = true,
         basePay = 500,
@@ -3491,7 +3728,7 @@ return {
         label = 'Giving in Vein',
         type = 'bloodbank',
         societyPay = true,
-        basePay = 500,
+        basePay = 600,
         grades = {
             [0] = {
                 name = 'Phlebotomis',
@@ -3813,5 +4050,5 @@ return {
             },
 		},
 	},
-    
+
 }

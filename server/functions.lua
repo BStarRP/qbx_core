@@ -354,7 +354,7 @@ exports('GetPermission', GetPermission)
 ---@return boolean
 function IsOptin(source)
     local license = GetPlayerIdentifierByType(source --[[@as string]], 'license2') or GetPlayerIdentifierByType(source --[[@as string]], 'license')
-    if not license or not IsPlayerAceAllowed(source --[[@as string]], 'admin') then return false end
+    if not license or not IsPlayerAceAllowed(source --[[@as string]], 'dev') then return false end
     local player = GetPlayer(source)
     return player.PlayerData.metadata.optin
 end
@@ -365,7 +365,7 @@ exports('IsOptin', IsOptin)
 ---@param source Source
 function ToggleOptin(source)
     local license = GetPlayerIdentifierByType(source --[[@as string]], 'license2') or GetPlayerIdentifierByType(source --[[@as string]], 'license')
-    if not license or not IsPlayerAceAllowed(source --[[@as string]], 'admin') then return end
+    if not license or not IsPlayerAceAllowed(source --[[@as string]], 'dev') then return end
     local player = GetPlayer(source)
     player.PlayerData.metadata.optin = not player.PlayerData.metadata.optin
     player.Functions.SetMetaData('optin', player.PlayerData.metadata.optin)
@@ -373,36 +373,47 @@ end
 
 exports('ToggleOptin', ToggleOptin)
 
+
 -- Check if player is banned
 ---@param source Source
----@return boolean
+---@return boolean isBanned
 ---@return string? playerMessage
+---@return string? unbanDate
 function IsPlayerBanned(source)
-    local identifiers = GetPlayerIdentifiers(source)
-    local result = storage.fetchBan(identifiers)
+    local identifiers = {
+        license  = GetPlayerIdentifierByType(source --[[@as string]], 'license'),
+        license2 = GetPlayerIdentifierByType(source --[[@as string]], 'license2'),
+        discord  = GetPlayerIdentifierByType(source --[[@as string]], 'discord'),
+        xbl      = GetPlayerIdentifierByType(source --[[@as string]], 'xbl'),
+        live     = GetPlayerIdentifierByType(source --[[@as string]], 'live'),
+        fivem    = GetPlayerIdentifierByType(source --[[@as string]], 'fivem'),
+        steam    = GetPlayerIdentifierByType(source --[[@as string]], 'steam'),
+        ip       = GetPlayerIdentifierByType(source --[[@as string]], 'ip'),
+        --tokens   = GetPlayerTokens(source --[[@as string]]),
+    }
 
-    if not result then return false end
-
-    if result.tokens then
-        local checkTokens = json.encode(result.tokens)
-        local tokens = GetPlayerTokens(source)
-        local tokenSearch = table.concat(tokens, ',')
-        for _, token in pairs(checkTokens) do
-            if string.find(tokenSearch, token) then
-                return true, ('You have been banned from the server! \n Reason: %s \n\n - open a ban appeal ticket in B⭐RP Discord!'):format(result.reason)
-            end
+    local result
+    for key, value in pairs(identifiers) do
+        if value then
+            result = storage.fetchBan({ [key] = value })
+            if result then break end
         end
     end
 
+    if not result then
+        return false
+    end
+
     if os.time() < result.expire then
-        return true, ('You have been banned from the server! \n Reason: %s \n\n - open a ban appeal ticket in B⭐RP Discord!'):format(result.reason)
+        local unbanDate = os.date("%m/%d/%Y %H:%M", result.expire) --[[@as string]]
+        return true, result.reason or "No reason provided", unbanDate
     else
         CreateThread(function()
-            if identifiers.license2 then
-                storage.deleteBan({ license = identifiers.license2 })
+            for key, value in pairs(identifiers) do
+                if value then
+                    storage.deleteBan({ [key] = value })
+                end
             end
-
-            storage.deleteBan({ license = identifiers.license })
         end)
     end
 

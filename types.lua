@@ -121,8 +121,14 @@
 
 ---@class GetBanRequest
 ---@field license? string
----@field discordId? string
+---@field license2? string
+---@field discord? string
+---@field xbl? string
+---@field live? string
+---@field fivem? string
+---@field steam? string
 ---@field ip? string
+---@field tokens? string[]
 
 ---@class BanEntity
 ---@field expire integer epoch second that the ban will expire
