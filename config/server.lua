@@ -74,6 +74,7 @@ return {
         discord = 'discord.gg/bstarrp', -- Discord invite link
         checkDuplicateDiscord = true, -- Check for duplicate rockstar license on join
         ---@deprecated use cfg ACE system instead
+        requireOptIn = true, -- Set to false to disable the requirement to use the /optin command before accessing admin commands
         permissions = { 'god', 'admin', 'dev', 'actor', 'mod', 'star6','star5', 'star4', 'star3', 'star2', 'star1', 'patron', 'trusted' }, -- Add as many groups as you want here after creating them in your server.cfg
     },
 
