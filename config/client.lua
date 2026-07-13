@@ -247,28 +247,28 @@ return {
     },
 
     discord = {
-        enabled = false, -- This will enable or disable the built in discord rich presence.
+        enabled = true, -- This will enable or disable the built in discord rich presence.
 
-        appId = '1024981890798731345', -- This is the Application ID (Replace this with you own)
+        appId = '880303711874846780', -- This is the Application ID (Replace this with you own)
 
         largeIcon = { -- To set this up, visit https://forum.cfx.re/t/how-to-updated-discord-rich-presence-custom-image/157686
-            icon = 'duck', -- Here you will have to put the image name for the 'large' icon.
-            text = 'Qbox Ducky', -- Here you can add hover text for the 'large' icon.
+            icon = 'logobig', -- Here you will have to put the image name for the 'large' icon.
+            text = 'B⭐️RP - Be The Producer In Your Own Story', -- Here you can add hover text for the 'large' icon.
         },
 
         smallIcon = {
-            icon = 'logo_name', -- Here you will have to put the image name for the 'small' icon.
-            text = 'This is a small icon with text', -- Here you can add hover text for the 'small' icon.
+            icon = 'logobig', -- Here you will have to put the image name for the 'small' icon.
+            text = 'B⭐️RP - Be The Producer In Your Own Story', -- Here you can add hover text for the 'small' icon.
         },
 
         firstButton = {
-            text = 'Qbox Discord',
-            link = 'https://discord.gg/Z6Whda5hHA',
+            text = 'Join our City',
+            link = 'fivem://connect/bstarrp.com:30120',
         },
 
         secondButton = {
-            text = 'Main Website',
-            link = 'https://www.qbox.re/',
+            text = 'Join our Discord',
+            link = 'https://discord.gg/bstarp',
         }
     },
 

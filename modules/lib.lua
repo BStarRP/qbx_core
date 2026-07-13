@@ -79,7 +79,6 @@ qbx.backEngineVehicles = {
     ['outlaw'] = true,
     ['polcoq4'] = true,
     ['nerops'] = true,
-    ['gstt202'] = true,
 }
 
 qbx.electricVehicles = {
@@ -94,17 +93,14 @@ qbx.electricVehicles = {
 	['khamelion'] = true,
     ['khamel'] = true,
     ['omnisegt'] = true,
-    ['eva'] = true,
     ['powersurge'] = true,
     ['virtue'] = true,
     ['iwagen'] = true,
-    ['savanna'] = true,
-    ['taranis'] = true,
-    ['beretta'] = true,
     ['buffalo5'] = true,
     ['vivanite'] = true,
-    ['pbbejv'] = true,
     ['nkomnisegt'] = true,
+    ['nkomnisegtum'] = true,
+    ['nkspeedegt'] = true,
 }
 
 qbx.armsWithoutGloves = lib.table.freeze({
@@ -254,6 +250,7 @@ qbx.diseaseLabels = {
     ['morphism'] = 'Morphism',
     ['zombism'] = 'Zombism',
     ['angelic'] = 'Angelic',
+    ['cannibalism'] = 'Cannibalism',
 }
 
 qbx.reputationLabels = {
@@ -772,13 +769,17 @@ else
         return qbx.electricVehicles[vehicleName] == true or (GetIsVehicleElectric(model) and IsThisModelAHeli(model) == false)
     end
 
-    ---Returns if the local ped is wearing gloves.
+    ---Returns if the ped is wearing gloves (arm component 3 not in armsWithoutGloves).
+    ---@param ped? number Ped handle; defaults to cache.ped when nil.
     ---@return boolean
-    function qbx.isWearingGloves()
-        local armIndex = GetPedDrawableVariation(cache.ped, 3)
-        local model = GetEntityModel(cache.ped)
-        local tble = qbx.armsWithoutGloves[model == `mp_m_freemode_01` and 'male' or 'female']
-        return not tble[armIndex]
+    function qbx.isWearingGloves(ped)
+        ped = ped or cache.ped
+        if not ped or not DoesEntityExist(ped) then return false end
+        local armIndex = GetPedDrawableVariation(ped, 3)
+        local model = GetEntityModel(ped)
+        local tbl = qbx.armsWithoutGloves[model == `mp_m_freemode_01` and 'male' or 'female']
+        if not tbl then return false end
+        return not tbl[armIndex]
     end
 
     --- Returns if the local ped is wearing a duffel bag.
@@ -881,6 +882,15 @@ else
         end
 
         ReleaseSoundId(soundId)
+    end
+
+    ---Seeds the random number generator with a time-based salt.
+    function qbx.randomSeed()
+        local salt = tonumber(tostring(os.time()):reverse():sub(1, 6)) or os.time()
+        math.randomseed(salt)
+        for i = 1, 3 do
+            math.random()
+        end
     end
 end
 

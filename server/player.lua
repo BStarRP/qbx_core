@@ -268,8 +268,10 @@ function AddPlayerToJob(citizenid, jobName, grade)
 
     storage.addPlayerToJob(citizenid, jobName, grade)
 
+    -- Keep in-memory jobs in sync for online and offline (SetPlayerPrimaryJob / SetJob need this)
+    player.PlayerData.jobs[jobName] = grade
+
     if not player.Offline then
-        player.PlayerData.jobs[jobName] = grade
         SetPlayerData(player.PlayerData.source, 'jobs', player.PlayerData.jobs)
         TriggerEvent('qbx_core:server:onGroupUpdate', player.PlayerData.source, jobName, grade)
         TriggerClientEvent('qbx_core:client:onGroupUpdate', player.PlayerData.source, jobName, grade)
@@ -651,6 +653,7 @@ function CheckPlayerData(source, playerData)
     playerData.metadata.diseases.aquatic = playerData.metadata.diseases.aquatic or 0
     playerData.metadata.diseases.demonic = playerData.metadata.diseases.demonic or 0
     playerData.metadata.diseases.riftopathy = playerData.metadata.diseases.riftopathy or 0
+    playerData.metadata.diseases.cannibalism = playerData.metadata.diseases.cannibalism or 0
     --reputation
     playerData.metadata.reputation = playerData.metadata.reputation or {}
     playerData.metadata.reputation.civilian = playerData.metadata.reputation.civilian or 0
@@ -964,7 +967,7 @@ function CreatePlayer(playerData, Offline)
     ---@param data table event, message, data, playerSrc, targetSrc, resource
     function self.Functions.Log(data)
         if GetResourceState('bstar-logging') ~= 'started' then
-            lib.print.warn('bstar-logging resource is not started. Logging skipped.')
+            -- lib.print.warn('bstar-logging resource is not started. Logging skipped.')
             return
         end
 
@@ -1335,8 +1338,8 @@ function AddMoney(identifier, moneyType, amount, reason)
     else
         Log({
             event = 'Player Added Money',
-            message = ('**%s money added, new %s balance: $%s reason: %s'):format(self.PlayerData.name, moneyType, amount, reason),
-            data = { reason = ReleaseBinkMovie, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneyType, cid = player.PlayerData.citizenid, status = 'offline'},
+            message = ('**%s money added, new %s balance: $%s reason: %s'):format(player.PlayerData.name, moneyType, amount, reason),
+            data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = amountDiff, new_amount = newAmount, money_type = moneyType, cid = player.PlayerData.citizenid, status = 'offline'},
             resource = GetInvokingResource()
         })
     end
@@ -1392,8 +1395,8 @@ function RemoveMoney(identifier, moneyType, amount, reason)
     else
         Log({
             event = 'Player Removed Money',
-            message = ('**%s money removed, new %s balance: $%s reason: %s'):format(self.PlayerData.name, moneyType, amount, reason),
-            data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = diffAmount, new_amount = newAmount, money_type = moneyType, cid = player.PlayerData.citizenid, status = 'online'},
+            message = ('**%s money removed, new %s balance: $%s reason: %s'):format(player.PlayerData.name, moneyType, amount, reason),
+            data = { reason = reason, amount = amount, previous_amount = prevAmount, amount_difference = diffAmount, new_amount = newAmount, money_type = moneyType, cid = player.PlayerData.citizenid, status = 'offline'},
             resource = GetInvokingResource()
         })
     end

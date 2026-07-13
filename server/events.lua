@@ -2,7 +2,6 @@ local serverConfig = require 'config.server'.server
 local loggingConfig = require 'config.server'.logging
 local serverName = require 'config.shared'.serverName
 local storage = require 'server.storage.main'
-local logger = require 'modules.logger'
 local queue = require 'server.queue'
 
 -- Event Handler
@@ -41,16 +40,16 @@ AddEventHandler('playerDropped', function(reason)
     local discord = GetPlayerIdentifierByType(src, 'discord')
     if discord then usedDiscords[discord] = nil end
     if not QBX.Players[src] then return end
+    exports.qbx_core:Log({
+        event = 'Player Dropped',
+        message = ('**%s** (%s) left...\n **Reason:** %s'):format(GetPlayerName(src), tostring(src), reason),
+        data = { source = src, reason = reason, playerName = GetPlayerName(src) },
+        source = src,
+        resource = GetInvokingResource() or 'qbx_core',
+    })
     GlobalState.PlayerCount = GetNumPlayerIndices()
     local player = QBX.Players[src]
     player.PlayerData.lastLoggedOut = os.time()
-    logger.log({
-        source = 'qbx_core',
-        webhook = loggingConfig.webhook['joinleave'],
-        event = 'Dropped',
-        color = 'red',
-        message = ('**%s** (%s) left...\n **Reason:** %s'):format(GetPlayerName(src), player.PlayerData.license, reason),
-    })
     player.Functions.Save()
     QBX.Player_Buckets[player.PlayerData.discord] = nil
     Wait(500)
@@ -96,8 +95,10 @@ local function onPlayerConnecting(name, _, deferrals)
 
     if identifiers.discord == nil or identifiers.discord == '' then
         deferrals.done(locale('error.no_valid_discord'))
+        return
     elseif serverConfig.checkDuplicateDiscord and usedDiscords[identifiers.discord] then
         deferrals.done(locale('error.duplicate_discord'))
+        return
     end
 
     storage.createUser(identifiers)

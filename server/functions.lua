@@ -110,6 +110,52 @@ end
 
 exports('GetQBPlayers', GetQBPlayers)
 
+local allowMethodOverrides = GetConvar('qbx:allowmethodoverrides', 'true') == 'true'
+local disableMethodOverrideWarning = GetConvar('qbx:disableoverridewarning', 'false') == 'true'
+
+local function checkExistingPlayerMethod(method, methodName)
+    local methodType = type(method)
+    if methodType == 'function' then
+        local warnMessage = allowMethodOverrides
+            and 'A resource is overriding method %s in player class. This can cause unexpected behavior. Disable this warning by setting convar qbx:disableoverridewarning to true'
+            or 'A resource attempted to override method %s in player object and was blocked. Disable this warning by setting convar qbx:disableoverridewarning to true'
+        if not disableMethodOverrideWarning then
+            lib.print.warn(warnMessage:format(methodName))
+        end
+        return allowMethodOverrides
+    end
+    return true
+end
+
+---Attach a custom function to online players' `Player.Functions` table (same behavior as legacy `QBCore.Functions.AddPlayerMethod`).
+---Typical use: `AddEventHandler('QBCore:Server:PlayerLoaded', function(player) exports.qbx_core:AddPlayerMethod(player.PlayerData.source, 'MyFn', function() end) end)`.
+---@param ids number|number[] Server id, array of ids, or **-1** for all connected players.
+---@param methodName string
+---@param handler function
+function AddPlayerMethod(ids, methodName, handler)
+    local idType = type(ids)
+    if idType == 'number' then
+        if ids == -1 then
+            for _, v in pairs(QBX.Players) do
+                if checkExistingPlayerMethod(v.Functions[methodName], methodName) then
+                    v.Functions[methodName] = handler
+                end
+            end
+        else
+            if not QBX.Players[ids] then return end
+            if checkExistingPlayerMethod(QBX.Players[ids].Functions[methodName], methodName) then
+                QBX.Players[ids].Functions[methodName] = handler
+            end
+        end
+    elseif idType == 'table' and table.type(ids) == 'array' then
+        for i = 1, #ids do
+            AddPlayerMethod(ids[i], methodName, handler)
+        end
+    end
+end
+
+exports('AddPlayerMethod', AddPlayerMethod)
+
 ---Gets a list of all on duty players of a specified job and the number
 ---@param job string name
 ---@return integer
@@ -353,7 +399,6 @@ exports('GetPermission', GetPermission)
 ---@param source Source
 ---@return boolean
 function IsOptin(source)
-    if not serverConfig.requireOptIn then return true end
     local license = GetPlayerIdentifierByType(source --[[@as string]], 'license2') or GetPlayerIdentifierByType(source --[[@as string]], 'license')
     if not license or not IsPlayerAceAllowed(source --[[@as string]], 'dev') then return false end
     local player = GetPlayer(source)
@@ -591,7 +636,7 @@ function Log(data)
     if not data or type(data) ~= 'table' then return end
 
     if GetResourceState('bstar-logging') ~= 'started' then
-        lib.print.warn('bstar-logging resource is not started. Logging skipped.')
+        -- lib.print.warn('bstar-logging resource is not started. Logging skipped.')
         return
     end
 
